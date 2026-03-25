@@ -1,0 +1,31 @@
+{% extends 'portal/base.html' %} {% block content %}
+
+<div class="auth-wrapper">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+      <div class="auth-card shadow-lg">
+        <div class="auth-header text-center">
+          <span class="auth-badge">Create Account</span>
+          <h2>Join Golden Dragon Tours</h2>
+          <p>Register to access your dashboard and purchase tickets.</p>
+        </div>
+
+        <form method="POST" class="auth-form mt-4">
+          {% csrf_token %} {{ form.as_p }}
+          <button type="submit" class="btn btn-brand w-100 py-3 mt-2">
+            Create Account
+          </button>
+        </form>
+
+        <div class="text-center mt-4">
+          <small
+            >Already have an account?
+            <a href="{% url 'login' %}" class="auth-link">Login here</a>
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

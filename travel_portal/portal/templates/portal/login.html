@@ -1,0 +1,58 @@
+{% extends 'portal/base.html' %} {% block content %}
+
+<div class="auth-wrapper">
+  <div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7">
+      <div class="auth-card shadow-lg">
+        <div class="auth-header text-center">
+          <span class="auth-badge">Welcome Back</span>
+          <h2>Login to Your Account</h2>
+          <p>Access your dashboard and continue your booking.</p>
+        </div>
+
+        <form method="POST" class="auth-form mt-4">
+          {% csrf_token %}
+
+          {% if form.non_field_errors %}
+          <div class="alert alert-danger custom-alert shadow-sm">
+            {{ form.non_field_errors|striptags }}
+          </div>
+          {% endif %}
+
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+            <div class="text-danger small mt-1">
+              {{ form.username.errors|striptags }}
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            {{ form.password }}
+            {% if form.password.errors %}
+            <div class="text-danger small mt-1">
+              {{ form.password.errors|striptags }}
+            </div>
+            {% endif %}
+          </div>
+
+          <button type="submit" class="btn btn-brand-dark w-100 py-3 mt-2">
+            Login
+          </button>
+        </form>
+
+        <div class="text-center mt-4">
+          <small
+            >No account yet?
+            <a href="{% url 'register' %}" class="auth-link">Create one</a>
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

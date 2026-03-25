@@ -1,0 +1,110 @@
+{% extends 'portal/base.html' %} {% block content %}
+
+<section class="hero-section">
+  <div class="row align-items-center g-4">
+    <div class="col-lg-6">
+      <div class="hero-copy">
+        <span class="hero-badge">Cultural Travel Experience</span>
+        <h1 class="hero-title">Discover Beijing Through Golden Dragon Tours</h1>
+        <p class="hero-text">
+          Scan, register, and book your cultural experience with ease. Explore
+          Beijing’s heritage, traditions, and iconic destinations through a
+          smooth digital ticketing experience.
+        </p>
+
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a href="{% url 'register' %}" class="btn btn-brand btn-lg px-4"
+            >Get Started</a
+          >
+          <a href="{% url 'login' %}" class="btn btn-outline-dark btn-lg px-4"
+            >Login</a
+          >
+        </div>
+
+        <div class="hero-mini-stats mt-5">
+          <div class="mini-stat-card">
+            <h5>Fast Access</h5>
+            <p>QR-based entry to the portal</p>
+          </div>
+          <div class="mini-stat-card">
+            <h5>Easy Booking</h5>
+            <p>Apply and get ticket instantly</p>
+          </div>
+          <div class="mini-stat-card">
+            <h5>Digital Ticket</h5>
+            <p>Barcode displayed after purchase</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="hero-card shadow-lg">
+        <div class="hero-card-top">
+          <span class="hero-card-label">Travel Portal</span>
+          <h3>Your Beijing journey starts here</h3>
+          <p>
+            Guests scan the QR code, create an account, choose a ticket, and
+            instantly receive their booking barcode.
+          </p>
+        </div>
+
+        <div class="process-list">
+          <div class="process-item">
+            <div class="process-number">1</div>
+            <div>
+              <h6>Scan QR Code</h6>
+              <p>Visitors land directly on the application site.</p>
+            </div>
+          </div>
+          <div class="process-item">
+            <div class="process-number">2</div>
+            <div>
+              <h6>Create Account or Login</h6>
+              <p>Secure access to personal booking dashboard.</p>
+            </div>
+          </div>
+          <div class="process-item">
+            <div class="process-number">3</div>
+            <div>
+              <h6>Fill Ticket Form</h6>
+              <p>Choose package, date, and submit details.</p>
+            </div>
+          </div>
+          <div class="process-item">
+            <div class="process-number">4</div>
+            <div>
+              <h6>Receive Digital Ticket</h6>
+              <p>A confirmation popup shows ticket details and barcode.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="info-strip mt-5">
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="feature-card">
+        <h5>Elegant Booking Flow</h5>
+        <p>Simple experience designed for international guests.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-card">
+        <h5>Tour Management Ready</h5>
+        <p>Built to support your travel agency's digital process.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-card">
+        <h5>Professional Branding</h5>
+        <p>Luxury-inspired UI using your agency colors and identity.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

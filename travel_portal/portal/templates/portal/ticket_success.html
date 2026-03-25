@@ -1,0 +1,103 @@
+{% extends 'portal/base.html' %} {% block content %}
+
+<div class="success-page text-center">
+  <div class="success-icon">✓</div>
+  <h2 class="mt-3">Ticket Generated Successfully</h2>
+  <p class="text-muted">
+    Your booking has been submitted successfully. View your digital ticket
+    below.
+  </p>
+
+  <button
+    class="btn btn-brand btn-lg mt-3"
+    data-bs-toggle="modal"
+    data-bs-target="#ticketInfoModal"
+  >
+    View Ticket Details
+  </button>
+</div>
+
+<div class="modal fade" id="ticketInfoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content ticket-modal-card">
+      <div class="modal-header border-0">
+        <div>
+          <span class="modal-mini-title">Digital Ticket</span>
+          <h4 class="mb-0">Golden Dragon Tours</h4>
+        </div>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="ticket-preview-card">
+          <div class="row align-items-center g-4">
+            <div class="col-md-7">
+              <div class="ticket-detail-grid">
+                <div>
+                  <small>Reference Code</small>
+                  <h5>{{ ticket.reference_code }}</h5>
+                </div>
+                <div>
+                  <small>Guest Name</small>
+                  <h5>{{ ticket.full_name }}</h5>
+                </div>
+                <div>
+                  <small>Email</small>
+                  <h6>{{ ticket.email }}</h6>
+                </div>
+                <div>
+                  <small>Tour Package</small>
+                  <h6>{{ ticket.tour_package }}</h6>
+                </div>
+                <div>
+                  <small>Travel Date</small>
+                  <h6>{{ ticket.travel_date }}</h6>
+                </div>
+                <div>
+                  <small>Quantity</small>
+                  <h6>{{ ticket.quantity }}</h6>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-5 text-center">
+              {% if ticket.barcode_image %}
+              <div class="barcode-card">
+                <img
+                  src="{{ ticket.barcode_image.url }}"
+                  class="img-fluid"
+                  alt="Barcode"
+                />
+              </div>
+              {% endif %}
+              <p class="barcode-note mt-2">
+                Present this barcode at the point of entry.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0">
+        <a href="{% url 'dashboard' %}" class="btn btn-brand-dark"
+          >Back to Dashboard</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.onload = function () {
+    const modal = new bootstrap.Modal(
+      document.getElementById("ticketInfoModal"),
+    );
+    modal.show();
+  };
+</script>
+
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends 'portal/base.html' %} {% block content %}
+
+<section class="dashboard-header mb-4">
+  <div class="dashboard-banner shadow-sm">
+    <div>
+      <span class="dashboard-tag">User Dashboard</span>
+      <h2>Hello, {{ user.username }}</h2>
+      <p>Manage your bookings and generate your travel ticket with ease.</p>
+    </div>
+    <div>
+      <button
+        class="btn btn-brand btn-lg px-4"
+        data-bs-toggle="modal"
+        data-bs-target="#ticketModal"
+      >
+        Get Ticket
+      </button>
+    </div>
+  </div>
+</section>
+
+<section class="dashboard-overview mb-4">
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="dashboard-stat-card">
+        <h6>Total Tickets</h6>
+        <h3>{{ tickets|length }}</h3>
+        <p>All submitted ticket requests</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="dashboard-stat-card">
+        <h6>Account Status</h6>
+        <h3>Active</h3>
+        <p>Your profile is ready for bookings</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="dashboard-stat-card">
+        <h6>Portal Access</h6>
+        <h3>Online</h3>
+        <p>Your ticketing system is available</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="dashboard-content">
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="content-card">
+        <div class="content-card-header">
+          <h4>Available Ticket Action</h4>
+          <p>Click the button below to fill out your ticket form.</p>
+        </div>
+
+        <div class="action-box">
+          <button
+            class="btn btn-brand btn-lg px-4"
+            data-bs-toggle="modal"
+            data-bs-target="#ticketModal"
+          >
+            Open Ticket Form
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="content-card">
+        <div class="content-card-header">
+          <h4>Recent Tickets</h4>
+          <p>Your latest generated tickets.</p>
+        </div>
+
+        <div class="ticket-list">
+          {% for ticket in tickets %}
+          <div class="ticket-list-item">
+            <div class="ticket-list-code">{{ ticket.reference_code }}</div>
+            <div class="ticket-list-meta">
+              <span>{{ ticket.tour_package }}</span>
+              <small>{{ ticket.travel_date }}</small>
+            </div>
+          </div>
+          {% empty %}
+          <div class="empty-state">
+            <p>
+              No tickets yet. Click <strong>Get Ticket</strong> to create one.
+            </p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Ticket Modal -->
+<div class="modal fade" id="ticketModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content custom-modal">
+      <form method="POST" action="{% url 'create_ticket' %}">
+        {% csrf_token %}
+        <div class="modal-header border-0 pb-0">
+          <div>
+            <span class="modal-mini-title">Ticket Application</span>
+            <h4 class="mb-0">Book Your Tour Ticket</h4>
+          </div>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
+
+        <div class="modal-body pt-3">{{ form.as_p }}</div>
+
+        <div class="modal-footer border-0 pt-0">
+          <button
+            type="button"
+            class="btn btn-outline-dark"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-brand px-4">
+            Submit Ticket
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
