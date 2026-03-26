@@ -310,10 +310,12 @@ h5 {
   border-radius: 14px;
   background: var(--bg-soft);
   border: 1px solid var(--border-soft);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  display: block;
+  font: inherit;
+  color: inherit;
 }.ticket-list-code {
   font-weight: 700;
   color: #000;
@@ -413,10 +415,12 @@ h5 {
   border-radius: 14px;
   background: var(--bg-soft);
   border: 1px solid var(--border-soft);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  display: block;
+  font: inherit;
+  color: inherit;
 }.mini-stat-card:hover,
 .feature-card:hover,
 .dashboard-stat-card:hover,
@@ -456,16 +460,4 @@ h5 {
 }
 
 
-.ticket-view-link {
-  border: none;
-  background: transparent;
-  color: #7c5739;
-  font-weight: 600;
-  padding: 6px 0;
-}
-
-.ticket-view-link:hover {
-  color: #5f4028;
-  text-decoration: underline;
-}
 

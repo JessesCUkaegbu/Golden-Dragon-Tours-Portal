@@ -75,23 +75,18 @@
 
         <div class="ticket-list">
           {% for ticket in tickets %}
-          <div class="ticket-list-item">
-            <div class="ticket-list-main">
-              <div class="ticket-list-code">{{ ticket.reference_code }}</div>
-              <div class="ticket-list-meta">
-                <span>{{ ticket.tour_package }}</span>
-                <small>{{ ticket.travel_date }}</small>
-              </div>
+          <button
+            type="button"
+            class="ticket-list-item"
+            data-bs-toggle="modal"
+            data-bs-target="#ticketInfoModal-{{ ticket.id }}"
+          >
+            <div class="ticket-list-code">{{ ticket.reference_code }}</div>
+            <div class="ticket-list-meta">
+              <span>{{ ticket.tour_package }}</span>
+              <small>{{ ticket.travel_date }}</small>
             </div>
-            <button
-              type="button"
-              class="ticket-view-link"
-              data-bs-toggle="modal"
-              data-bs-target="#ticketInfoModal-{{ ticket.id }}"
-            >
-              View Ticket
-            </button>
-          </div>
+          </button>
 
           <div
             class="modal fade"
@@ -226,5 +221,6 @@
 </div>
 
 {% endblock %}
+
 
 
