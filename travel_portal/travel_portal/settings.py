@@ -21,14 +21,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-secret-key")
+SECRET_KEY = os.getenv("SECRET_KEY", "dev-only-secret-key")
 DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = [h.strip() for h in os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",") if h.strip()]
+ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",") if h.strip()]
 CSRF_TRUSTED_ORIGINS = [
     u.strip()
     for u in os.getenv(
-        "DJANGO_CSRF_TRUSTED_ORIGINS",
+        "CSRF_TRUSTED_ORIGINS",
         "http://127.0.0.1:8000,http://localhost:8000",
     ).split(",")
     if u.strip()
