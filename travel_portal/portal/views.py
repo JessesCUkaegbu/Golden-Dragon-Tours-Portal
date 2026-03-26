@@ -17,7 +17,6 @@ from barcode.writer import ImageWriter
 
 
 
-
 def home(request):
     return render(request, 'portal/home.html')
 
@@ -34,8 +33,6 @@ def register_view(request):
     else:
         form = RegisterForm()
     return render(request, 'portal/register.html', {'form': form})
-
-
 
 
 
