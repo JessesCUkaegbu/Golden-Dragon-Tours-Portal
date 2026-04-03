@@ -10,47 +10,46 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+from multiprocessing.util import DEBUG
 from pathlib import Path
 import os
+import environ
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY", "dev-only-secret-key")
-DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
+# Core
+SECRET_KEY = env.str("SECRET_KEY")
+IS_PRODUCTION = env.bool("IS_PRODUCTION", default=False)
+DEBUG = not IS_PRODUCTION
 
-ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",") if h.strip()]
-CSRF_TRUSTED_ORIGINS = [
-    u.strip()
-    for u in os.getenv(
-        "CSRF_TRUSTED_ORIGINS",
-        "http://127.0.0.1:8000,http://localhost:8000",
-    ).split(",")
-    if u.strip()
-]
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["127.0.0.1", "localhost"])
+CSRF_TRUSTED_ORIGINS = env.list(
+    "CSRF_TRUSTED_ORIGINS",
+    default=["http://127.0.0.1:8000", "http://localhost:8000"]
+)
 
-
-
-DATABASE_URL = os.getenv("DATABASE_URL")
+# Database — same pattern as your example
+# Locally: comment out DATABASE_URL in .env to use SQLite
+# Production: set DATABASE_URL to your Railway PostgreSQL URL
+DATABASE_URL = env.str("DATABASE_URL", default=None)
 
 if DATABASE_URL:
-    # PostgreSQL (Railway/production)
     import dj_database_url
-
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
             conn_max_age=600,
-            ssl_require=True,
+            ssl_require=IS_PRODUCTION  # only require SSL in production
         )
     }
 else:
-    # SQLite (local development)
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -70,6 +69,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'portal',
+    
+    'cloudinary_storage',
+    'django.contrib.staticfiles',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -137,6 +140,21 @@ TIME_ZONE = 'Asia/Shanghai'
 USE_I18N = True
 USE_TZ = True
 
+
+# Media files — Cloudinary in production, local in dev
+if IS_PRODUCTION:
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': env.str('CLOUDINARY_CLOUD_NAME'),
+        'API_KEY': env.str('CLOUDINARY_API_KEY'),
+        'API_SECRET': env.str('CLOUDINARY_API_SECRET'),
+    }
+else:
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -149,12 +167,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'home'
 
-SECURE_SSL_REDIRECT = os.environ.get('DJANGO_SECURE_SSL_REDIRECT', 'False').lower() == 'true' if not DEBUG else False
-SESSION_COOKIE_SECURE = os.environ.get('DJANGO_SESSION_COOKIE_SECURE', 'False').lower() == 'true' if not DEBUG else False
-CSRF_COOKIE_SECURE = os.environ.get('DJANGO_CSRF_COOKIE_SECURE', 'False').lower() == 'true' if not DEBUG else False
-SECURE_HSTS_SECONDS = int(os.environ.get('DJANGO_SECURE_HSTS_SECONDS', '31536000')) if not DEBUG else 0
-SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get('DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS', 'True').lower() == 'true' if not DEBUG else False
-SECURE_HSTS_PRELOAD = os.environ.get('DJANGO_SECURE_HSTS_PRELOAD', 'False').lower() == 'true' if not DEBUG else False
+SECURE_SSL_REDIRECT = environ.get('SECURE_SSL_REDIRECT', 'False').lower() == 'true' if not DEBUG else False
+SESSION_COOKIE_SECURE = environ.get('SESSION_COOKIE_SECURE', 'False').lower() == 'true' if not DEBUG else False
+CSRF_COOKIE_SECURE = environ.get('CSRF_COOKIE_SECURE', 'False').lower() == 'true' if not DEBUG else False
+SECURE_HSTS_SECONDS = int(environ.get('SECURE_HSTS_SECONDS', '31536000')) if not DEBUG else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = environ.get('SECURE_HSTS_INCLUDE_SUBDOMAINS', 'True').lower() == 'true' if not DEBUG else False
+SECURE_HSTS_PRELOAD = environ.get('SECURE_HSTS_PRELOAD', 'False').lower() == 'true' if not DEBUG else False
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') if not DEBUG else None
 
 

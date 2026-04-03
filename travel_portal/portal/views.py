@@ -80,6 +80,24 @@ def dashboard(request):
 
 
 
+# @login_required
+# def create_ticket(request):
+#     if request.method == 'POST':
+#         form = TicketForm(request.POST)
+#         if form.is_valid():
+#             ticket = form.save(commit=False)
+#             ticket.user = request.user
+#             ticket.save()
+#             # Generate barcode image
+#             code128 = barcode.get('code128', ticket.reference_code, writer=ImageWriter())
+#             buffer = BytesIO()
+#             code128.write(buffer)
+#             file_name = f"{ticket.reference_code}.png"
+#             ticket.barcode_image.save(file_name, ContentFile(buffer.getvalue()), save=True)
+
+#             return redirect('ticket_success', ticket_id=ticket.id)
+#     return redirect('dashboard')
+
 @login_required
 def create_ticket(request):
     if request.method == 'POST':
@@ -88,16 +106,24 @@ def create_ticket(request):
             ticket = form.save(commit=False)
             ticket.user = request.user
             ticket.save()
-
             # Generate barcode image
             code128 = barcode.get('code128', ticket.reference_code, writer=ImageWriter())
             buffer = BytesIO()
             code128.write(buffer)
             file_name = f"{ticket.reference_code}.png"
             ticket.barcode_image.save(file_name, ContentFile(buffer.getvalue()), save=True)
-
+            
+            messages.success(request, 'Ticket created successfully!')
             return redirect('ticket_success', ticket_id=ticket.id)
-    return redirect('dashboard')
+        else:
+            # Show the user what went wrong
+            messages.error(request, 'Please fix the errors below.')
+            return render(request, 'portal/create_ticket.html', {'form': form})
+    
+    form = TicketForm()
+    return render(request, 'portal/create_ticket.html', {'form': form})
+
+
 
 
 
