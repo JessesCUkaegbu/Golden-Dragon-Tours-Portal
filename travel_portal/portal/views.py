@@ -13,6 +13,7 @@ from io import BytesIO
 from django.core.files.base import ContentFile
 import barcode
 from barcode.writer import ImageWriter
+import cloudinary.uploader
 
 
 
@@ -88,27 +89,37 @@ def create_ticket(request):
             ticket = form.save(commit=False)
             ticket.user = request.user
             ticket.save()
+
             try:
-                # Generate barcode image
+                # Generate barcode into buffer
                 code128 = barcode.get('code128', ticket.reference_code, writer=ImageWriter())
                 buffer = BytesIO()
                 code128.write(buffer)
-                file_name = f"{ticket.reference_code}.png"
-                ticket.barcode_image.save(file_name, ContentFile(buffer.getvalue()), save=True)
+                buffer.seek(0)  # rewind buffer to the beginning
+
+                # Upload directly to Cloudinary
+                result = cloudinary.uploader.upload(
+                    buffer,
+                    public_id=f"barcodes/{ticket.reference_code}",
+                    resource_type="image"
+                )
+
+                # Save the Cloudinary URL to the ticket
+                ticket.barcode_image = result['public_id']
+                ticket.save()
+
             except Exception as e:
                 print(f"Barcode generation/upload error: {e}")
-                messages.error(request, f"Error generating barcode: {e}")
-            
+                messages.warning(request, f'Ticket created but barcode failed: {e}')
+
             messages.success(request, 'Ticket created successfully!')
             return redirect('ticket_success', ticket_id=ticket.id)
         else:
-            # Show the user what went wrong
             messages.error(request, 'Please fix the errors below.')
             return render(request, 'portal/create_ticket.html', {'form': form})
-    
+
     form = TicketForm()
     return render(request, 'portal/create_ticket.html', {'form': form})
-
 
 
 @login_required
