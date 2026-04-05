@@ -12,6 +12,7 @@ idna==3.11
 packaging==26.0
 pillow==12.1.1
 psycopg==3.3.3
+psycopg2-binary==2.9.11
 python-barcode==0.16.1
 python-dotenv==1.2.2
 qrcode==8.2

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from cloudinary.models import CloudinaryField  # add this import
 import uuid
 
 
@@ -13,7 +14,7 @@ class Ticket(models.Model):
     travel_date = models.DateField()
     quantity = models.PositiveIntegerField(default=1)
     reference_code = models.CharField(max_length=100, unique=True, blank=True)
-    barcode_image = models.ImageField(upload_to='barcodes/', blank=True, null=True)
+    barcode_image = CloudinaryField('image', blank=True, null=True)  # changed
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
