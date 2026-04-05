@@ -145,18 +145,15 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Only include in development — folder doesn't exist on Railway
-if not IS_PRODUCTION:
-    STATICFILES_DIRS = [BASE_DIR / 'static']
+CLOUDINARY_CLOUD_NAME = env.str('CLOUDINARY_CLOUD_NAME', default=None)
 
-# Media files — Cloudinary in production, local in dev
-if IS_PRODUCTION:
+if CLOUDINARY_CLOUD_NAME:
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
     CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': env.str('CLOUDINARY_CLOUD_NAME'),
+        'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,
         'API_KEY': env.str('CLOUDINARY_API_KEY'),
         'API_SECRET': env.str('CLOUDINARY_API_SECRET'),
     }
-    MEDIA_URL = '/media/'
 else:
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
     MEDIA_URL = '/media/'

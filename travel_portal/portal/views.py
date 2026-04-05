@@ -88,12 +88,16 @@ def create_ticket(request):
             ticket = form.save(commit=False)
             ticket.user = request.user
             ticket.save()
-            # Generate barcode image
-            code128 = barcode.get('code128', ticket.reference_code, writer=ImageWriter())
-            buffer = BytesIO()
-            code128.write(buffer)
-            file_name = f"{ticket.reference_code}.png"
-            ticket.barcode_image.save(file_name, ContentFile(buffer.getvalue()), save=True)
+            try:
+                # Generate barcode image
+                code128 = barcode.get('code128', ticket.reference_code, writer=ImageWriter())
+                buffer = BytesIO()
+                code128.write(buffer)
+                file_name = f"{ticket.reference_code}.png"
+                ticket.barcode_image.save(file_name, ContentFile(buffer.getvalue()), save=True)
+            except Exception as e:
+                print(f"Barcode generation/upload error: {e}")
+                messages.error(request, f"Error generating barcode: {e}")
             
             messages.success(request, 'Ticket created successfully!')
             return redirect('ticket_success', ticket_id=ticket.id)
@@ -104,7 +108,6 @@ def create_ticket(request):
     
     form = TicketForm()
     return render(request, 'portal/create_ticket.html', {'form': form})
-
 
 
 
