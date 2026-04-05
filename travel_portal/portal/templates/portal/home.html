@@ -1,81 +1,104 @@
 {% extends 'portal/base.html' %} {% block content %}
 
-<section class="hero-section">
-  <div class="row align-items-center g-4">
+<!-- ── HERO ──────────────────────────────────────────────── -->
+<section class="home-hero">
+  <div class="row align-items-center g-5">
     <div class="col-lg-6">
-      <div class="hero-copy">
-        <span class="hero-badge">Cultural Travel Experience</span>
-        <h1 class="hero-title">Discover Beijing Through Golden Dragon Tours</h1>
-        <p class="hero-text">
+      <div class="home-hero-copy">
+        <span class="home-badge">✦ Cultural Travel Experience</span>
+        <h1 class="home-hero-title">
+          Discover Beijing Through
+          <span class="home-title-accent">Golden Dragon</span>
+          Tours
+        </h1>
+        <p class="home-hero-text">
           Scan, register, and book your cultural experience with ease. Explore
-          Beijing’s heritage, traditions, and iconic destinations through a
+          Beijing's heritage, traditions, and iconic destinations through a
           smooth digital ticketing experience.
         </p>
 
-        <div class="d-flex flex-wrap gap-3 mt-4">
-          <a href="{% url 'register' %}" class="btn btn-brand btn-lg px-4"
-            >Get Started</a
-          >
-          <a href="{% url 'login' %}" class="btn btn-outline-dark btn-lg px-4"
-            >Login</a
-          >
+        <div class="home-hero-actions">
+          <a href="{% url 'register' %}" class="btn-home-primary">
+            Get Started
+            <svg
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.5"
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </svg>
+          </a>
+          <a href="{% url 'login' %}" class="btn-home-ghost">Login</a>
         </div>
 
-        <div class="hero-mini-stats mt-5">
-          <div class="mini-stat-card">
-            <h5>Fast Access</h5>
-            <p>QR-based entry to the portal</p>
+        <div class="home-trust-strip">
+          <div class="home-trust-item">
+            <span class="home-trust-num">500+</span>
+            <span class="home-trust-label">Happy Guests</span>
           </div>
-          <div class="mini-stat-card">
-            <h5>Easy Booking</h5>
-            <p>Apply and get ticket instantly</p>
+          <div class="home-trust-divider"></div>
+          <div class="home-trust-item">
+            <span class="home-trust-num">12</span>
+            <span class="home-trust-label">Tour Packages</span>
           </div>
-          <div class="mini-stat-card">
-            <h5>Digital Ticket</h5>
-            <p>Barcode displayed after purchase</p>
+          <div class="home-trust-divider"></div>
+          <div class="home-trust-item">
+            <span class="home-trust-num">4.9★</span>
+            <span class="home-trust-label">Guest Rating</span>
           </div>
         </div>
       </div>
     </div>
 
     <div class="col-lg-6">
-      <div class="hero-card shadow-lg">
-        <div class="hero-card-top">
-          <span class="hero-card-label">Travel Portal</span>
+      <div class="home-process-card">
+        <div class="home-process-card-header">
+          <span class="home-card-tag">Travel Portal</span>
           <h3>Your Beijing journey starts here</h3>
           <p>
-            Guests scan the QR code, create an account, choose a ticket, and
-            instantly receive their booking barcode.
+            Scan, register, pick a package and get your digital ticket — all in
+            under 3 minutes.
           </p>
         </div>
 
-        <div class="process-list">
-          <div class="process-item">
-            <div class="process-number">1</div>
-            <div>
+        <div class="home-steps">
+          <div class="home-step">
+            <div class="home-step-num">01</div>
+            <div class="home-step-line"></div>
+            <div class="home-step-body">
               <h6>Scan QR Code</h6>
               <p>Visitors land directly on the application site.</p>
             </div>
           </div>
-          <div class="process-item">
-            <div class="process-number">2</div>
-            <div>
+          <div class="home-step">
+            <div class="home-step-num">02</div>
+            <div class="home-step-line"></div>
+            <div class="home-step-body">
               <h6>Create Account or Login</h6>
-              <p>Secure access to personal booking dashboard.</p>
+              <p>Secure access to your personal booking dashboard.</p>
             </div>
           </div>
-          <div class="process-item">
-            <div class="process-number">3</div>
-            <div>
+          <div class="home-step">
+            <div class="home-step-num">03</div>
+            <div class="home-step-line"></div>
+            <div class="home-step-body">
               <h6>Fill Ticket Form</h6>
-              <p>Choose package, date, and submit details.</p>
+              <p>Choose your package, travel date and submit details.</p>
             </div>
           </div>
-          <div class="process-item">
-            <div class="process-number">4</div>
-            <div>
+          <div class="home-step">
+            <div class="home-step-num">04</div>
+            <div class="home-step-line last"></div>
+            <div class="home-step-body">
               <h6>Receive Digital Ticket</h6>
-              <p>A confirmation popup shows ticket details and barcode.</p>
+              <p>A confirmation popup shows your ticket details and barcode.</p>
             </div>
           </div>
         </div>
@@ -84,27 +107,420 @@
   </div>
 </section>
 
-<section class="info-strip mt-5">
-  <div class="row g-4">
-    <div class="col-md-4">
-      <div class="feature-card">
-        <h5>Elegant Booking Flow</h5>
-        <p>Simple experience designed for international guests.</p>
+<!-- ── FEATURES ───────────────────────────────────────────── -->
+<section class="home-section" id="features">
+  <div class="home-section-label">Why Choose Us</div>
+  <h2 class="home-section-title">
+    Everything you need for a seamless tour experience
+  </h2>
+
+  <div class="home-features-grid">
+    <div class="home-feature-card home-feature-card--accent">
+      <div class="home-feature-icon">⚡</div>
+      <h4>Instant Digital Ticket</h4>
+      <p>
+        Your barcode ticket is generated and ready in seconds after submission.
+        No waiting, no printing required.
+      </p>
+    </div>
+    <div class="home-feature-card">
+      <div class="home-feature-icon">🔒</div>
+      <h4>Secure & Private</h4>
+      <p>
+        All guest data is encrypted and protected. Your booking details are only
+        accessible to you.
+      </p>
+    </div>
+    <div class="home-feature-card">
+      <div class="home-feature-icon">📱</div>
+      <h4>Mobile Friendly</h4>
+      <p>
+        Works flawlessly on any device. Book and manage your tickets from your
+        phone with ease.
+      </p>
+    </div>
+    <div class="home-feature-card">
+      <div class="home-feature-icon">🌏</div>
+      <h4>Multi-Package Support</h4>
+      <p>
+        Choose from a range of Beijing cultural packages tailored for different
+        travel styles and durations.
+      </p>
+    </div>
+    <div class="home-feature-card">
+      <div class="home-feature-icon">📋</div>
+      <h4>Booking Dashboard</h4>
+      <p>
+        View and manage all your tickets in one place. See your travel history
+        at a glance.
+      </p>
+    </div>
+    <div class="home-feature-card">
+      <div class="home-feature-icon">🎯</div>
+      <h4>QR Code Entry</h4>
+      <p>
+        Guests simply scan the QR code on arrival to access the portal and start
+        their booking instantly.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── TOUR PACKAGES ──────────────────────────────────────── -->
+<section class="home-section home-section--alt" id="packages">
+  <div class="home-section-label">Our Packages</div>
+  <h2 class="home-section-title">Curated Beijing Experiences</h2>
+  <p class="home-section-sub">
+    Hand-crafted tour packages that bring Beijing's rich culture to life.
+  </p>
+
+  <div class="row g-4 mt-2">
+    <div class="col-lg-4 col-md-6">
+      <div class="home-package-card">
+        <div class="home-package-img home-package-img--1">
+          <span class="home-package-duration">3 Days</span>
+        </div>
+        <div class="home-package-body">
+          <h5>Beijing Classic Tour</h5>
+          <p>
+            The Great Wall, Forbidden City, and Tiananmen Square — the iconic
+            must-sees of Beijing.
+          </p>
+          <div class="home-package-footer">
+            <span class="home-package-price">From $299</span>
+            <a href="{% url 'register' %}" class="btn-home-small">Book Now</a>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="feature-card">
-        <h5>Tour Management Ready</h5>
-        <p>Built to support your travel agency's digital process.</p>
+    <div class="col-lg-4 col-md-6">
+      <div class="home-package-card home-package-card--featured">
+        <div class="home-featured-tag">Most Popular</div>
+        <div class="home-package-img home-package-img--2">
+          <span class="home-package-duration">5 Days</span>
+        </div>
+        <div class="home-package-body">
+          <h5>Cultural Immersion Tour</h5>
+          <p>
+            Deep dive into hutongs, local markets, temple visits and authentic
+            Beijing cuisine.
+          </p>
+          <div class="home-package-footer">
+            <span class="home-package-price">From $499</span>
+            <a href="{% url 'register' %}" class="btn-home-small">Book Now</a>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="feature-card">
-        <h5>Professional Branding</h5>
-        <p>Luxury-inspired UI using your agency colors and identity.</p>
+    <div class="col-lg-4 col-md-6">
+      <div class="home-package-card">
+        <div class="home-package-img home-package-img--3">
+          <span class="home-package-duration">7 Days</span>
+        </div>
+        <div class="home-package-body">
+          <h5>Imperial Beijing Tour</h5>
+          <p>
+            A full week exploring imperial palaces, the Summer Palace, Ming
+            Tombs and beyond.
+          </p>
+          <div class="home-package-footer">
+            <span class="home-package-price">From $799</span>
+            <a href="{% url 'register' %}" class="btn-home-small">Book Now</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
+
+<!-- ── PRICING ────────────────────────────────────────────── -->
+<section class="home-section" id="pricing">
+  <div class="home-section-label">Pricing Plans</div>
+  <h2 class="home-section-title">Simple, transparent pricing</h2>
+  <p class="home-section-sub">
+    Choose the plan that fits your travel needs. Upgrade or cancel anytime.
+  </p>
+
+  <div class="home-pricing-grid">
+    <div class="home-pricing-card">
+      <div class="home-pricing-header">
+        <h5>Free</h5>
+        <div class="home-pricing-price">$0<span>/mo</span></div>
+        <p>Perfect for one-time travellers</p>
+      </div>
+      <ul class="home-pricing-features">
+        <li class="yes">1 ticket per month</li>
+        <li class="yes">Basic tour packages</li>
+        <li class="yes">Digital barcode ticket</li>
+        <li class="yes">Booking dashboard</li>
+        <li class="no">Email confirmation</li>
+        <li class="no">PDF ticket download</li>
+        <li class="no">Priority support</li>
+      </ul>
+      <a href="{% url 'register' %}" class="btn-home-plan-ghost"
+        >Get Started Free</a
+      >
+    </div>
+
+    <div class="home-pricing-card home-pricing-card--featured">
+      <div class="home-pricing-badge">Most Popular</div>
+      <div class="home-pricing-header">
+        <h5>Standard</h5>
+        <div class="home-pricing-price">$9.99<span>/mo</span></div>
+        <p>For frequent travellers</p>
+      </div>
+      <ul class="home-pricing-features">
+        <li class="yes">5 tickets per month</li>
+        <li class="yes">All tour packages</li>
+        <li class="yes">Digital barcode ticket</li>
+        <li class="yes">Booking dashboard</li>
+        <li class="yes">Email confirmation</li>
+        <li class="yes">PDF ticket download</li>
+        <li class="no">Priority support</li>
+      </ul>
+      <a href="{% url 'register' %}" class="btn-home-plan">Get Standard</a>
+    </div>
+
+    <div class="home-pricing-card">
+      <div class="home-pricing-header">
+        <h5>Premium</h5>
+        <div class="home-pricing-price">$29.99<span>/mo</span></div>
+        <p>For travel agencies & groups</p>
+      </div>
+      <ul class="home-pricing-features">
+        <li class="yes">Unlimited tickets</li>
+        <li class="yes">All tour packages</li>
+        <li class="yes">Digital barcode ticket</li>
+        <li class="yes">Booking dashboard</li>
+        <li class="yes">Email confirmation</li>
+        <li class="yes">PDF ticket download</li>
+        <li class="yes">Priority support</li>
+      </ul>
+      <a href="{% url 'register' %}" class="btn-home-plan-ghost">Get Premium</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ───────────────────────────────────────── -->
+<section class="home-section home-section--alt" id="testimonials">
+  <div class="home-section-label">Guest Reviews</div>
+  <h2 class="home-section-title">What our guests are saying</h2>
+
+  <div class="row g-4 mt-2">
+    <div class="col-lg-4 col-md-6">
+      <div class="home-testimonial-card">
+        <div class="home-stars">★★★★★</div>
+        <p>
+          "The booking process was incredibly smooth. Got my barcode ticket in
+          seconds and the tour was absolutely amazing."
+        </p>
+        <div class="home-testimonial-author">
+          <div class="home-testimonial-avatar">S</div>
+          <div>
+            <strong>Sarah M.</strong>
+            <small>United Kingdom</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-6">
+      <div class="home-testimonial-card home-testimonial-card--accent">
+        <div class="home-stars">★★★★★</div>
+        <p>
+          "Golden Dragon made our Beijing experience unforgettable. The digital
+          ticket system is so convenient for international guests."
+        </p>
+        <div class="home-testimonial-author">
+          <div class="home-testimonial-avatar">J</div>
+          <div>
+            <strong>James K.</strong>
+            <small>Australia</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-6">
+      <div class="home-testimonial-card">
+        <div class="home-stars">★★★★★</div>
+        <p>
+          "I love how easy it was to scan the QR code, register, and get my
+          ticket instantly. Very professional platform."
+        </p>
+        <div class="home-testimonial-author">
+          <div class="home-testimonial-avatar">A</div>
+          <div>
+            <strong>Amara D.</strong>
+            <small>Nigeria</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ────────────────────────────────────────────────── -->
+<section class="home-section" id="faq">
+  <div class="home-section-label">FAQ</div>
+  <h2 class="home-section-title">Frequently Asked Questions</h2>
+
+  <div class="home-faq-grid">
+    <div class="home-faq-item">
+      <button class="home-faq-question" onclick="toggleFaq(this)">
+        How do I get my ticket after booking?
+        <span class="home-faq-icon">+</span>
+      </button>
+      <div class="home-faq-answer">
+        After submitting the ticket form, your digital ticket with a unique
+        barcode is generated instantly. You can view it from your dashboard at
+        any time.
+      </div>
+    </div>
+    <div class="home-faq-item">
+      <button class="home-faq-question" onclick="toggleFaq(this)">
+        Can I book for multiple people?
+        <span class="home-faq-icon">+</span>
+      </button>
+      <div class="home-faq-answer">
+        Yes. When filling out the ticket form, you can specify the quantity of
+        guests. One ticket covers the specified number of travellers.
+      </div>
+    </div>
+    <div class="home-faq-item">
+      <button class="home-faq-question" onclick="toggleFaq(this)">
+        How do I access the platform?
+        <span class="home-faq-icon">+</span>
+      </button>
+      <div class="home-faq-answer">
+        Simply scan the QR code provided at the venue or visit the site
+        directly. Create a free account and you'll have instant access to the
+        booking dashboard.
+      </div>
+    </div>
+    <div class="home-faq-item">
+      <button class="home-faq-question" onclick="toggleFaq(this)">
+        Can I cancel or modify my ticket?
+        <span class="home-faq-icon">+</span>
+      </button>
+      <div class="home-faq-answer">
+        Ticket cancellation and modification features are coming soon.
+        Currently, please contact our support team if you need to make changes
+        to a booking.
+      </div>
+    </div>
+    <div class="home-faq-item">
+      <button class="home-faq-question" onclick="toggleFaq(this)">
+        What payment methods are accepted?
+        <span class="home-faq-icon">+</span>
+      </button>
+      <div class="home-faq-answer">
+        Subscription payments are processed securely through Stripe, supporting
+        all major credit and debit cards as well as digital wallets.
+      </div>
+    </div>
+    <div class="home-faq-item">
+      <button class="home-faq-question" onclick="toggleFaq(this)">
+        Is my personal data safe?
+        <span class="home-faq-icon">+</span>
+      </button>
+      <div class="home-faq-answer">
+        Absolutely. All data is encrypted and stored securely. We never share
+        your personal information with third parties without your consent.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA BANNER ─────────────────────────────────────────── -->
+<section class="home-cta-banner">
+  <div class="home-cta-inner">
+    <h2>Ready to start your Beijing adventure?</h2>
+    <p>
+      Join hundreds of guests who have discovered Beijing through Golden Dragon
+      Tours.
+    </p>
+    <div class="home-cta-actions">
+      <a href="{% url 'register' %}" class="btn-home-primary">
+        Create Free Account
+        <svg
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2.5"
+            d="M17 8l4 4m0 0l-4 4m4-4H3"
+          />
+        </svg>
+      </a>
+      <a href="{% url 'login' %}" class="btn-home-ghost btn-home-ghost--light"
+        >Already have an account?</a
+      >
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────── -->
+<footer class="home-footer">
+  <div class="row align-items-center g-3">
+    <div class="col-md-4">
+      <div class="home-footer-brand">
+        {% load static %}
+        <img
+          src="{% static 'portal/image/logo.png' %}"
+          alt="Golden Dragon"
+          height="32"
+          onerror="this.style.display = 'none'"
+        />
+        <span>Golden Dragon Tours</span>
+      </div>
+      <p class="home-footer-tagline">
+        Connecting the world to Beijing's cultural heritage.
+      </p>
+    </div>
+    <div class="col-md-4 text-center">
+      <div class="home-footer-links">
+        <a href="#features">Features</a>
+        <a href="#packages">Packages</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </div>
+    </div>
+    <div class="col-md-4 text-md-end">
+      <div class="home-footer-auth">
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'register' %}" class="home-footer-cta">Get Started</a>
+      </div>
+    </div>
+  </div>
+  <div class="home-footer-bottom">
+    <span>© 2026 Golden Dragon Tours. All rights reserved.</span>
+  </div>
+</footer>
+
+<script>
+  function toggleFaq(btn) {
+    const item = btn.parentElement;
+    const answer = item.querySelector(".home-faq-answer");
+    const icon = btn.querySelector(".home-faq-icon");
+    const isOpen = item.classList.contains("open");
+
+    // Close all
+    document.querySelectorAll(".home-faq-item.open").forEach((el) => {
+      el.classList.remove("open");
+      el.querySelector(".home-faq-answer").style.maxHeight = null;
+      el.querySelector(".home-faq-icon").textContent = "+";
+    });
+
+    if (!isOpen) {
+      item.classList.add("open");
+      answer.style.maxHeight = answer.scrollHeight + "px";
+      icon.textContent = "×";
+    }
+  }
+</script>
 
 {% endblock %}

@@ -10,6 +10,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="{% static 'portal/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'portal/css/home.css' %}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap"
@@ -25,7 +26,7 @@
             alt="Golden Dragon Tours Logo"
             class="brand-logo-img"
             srcset=""
-          /></a>
+        /></a>
 
         <button
           class="navbar-toggler bg-light"
@@ -71,17 +72,20 @@
 
     <main class="page-wrapper">
       <div class="container py-4">
-        {% if messages %} {% for message in messages %}
-        {% if 'error' in message.tags %}
-        <div class="alert alert-danger custom-alert shadow-sm">
-          {{ message }}
-        </div>
-        {% else %}
-        <div class="alert alert-success custom-alert shadow-sm">
-          {{ message }}
-        </div>
+        {% if messages %}
+          {% for message in messages %}
+            {% if message.level_tag == 'error' %}
+              <div class="alert alert-danger custom-alert shadow-sm">
+                {{ message }}
+              </div>
+            {% else %}
+              <div class="alert alert-success custom-alert shadow-sm">
+                {{ message }}
+              </div>
+            {% endif %}
+          {% endfor %}
         {% endif %}
-        {% endfor %} {% endif %} {% block content %}{% endblock %}
+        {% block content %}{% endblock %}
       </div>
     </main>
 
