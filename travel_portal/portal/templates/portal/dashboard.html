@@ -201,7 +201,78 @@
           ></button>
         </div>
 
-        <div class="modal-body pt-3">{{ form.as_p }}</div>
+        <div class="modal-body pt-3">
+          {% if form.non_field_errors %}
+          <div class="alert alert-danger custom-alert shadow-sm">
+            {{ form.non_field_errors|striptags }}
+          </div>
+          {% endif %}
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Full Name</label>
+              {{ form.full_name }} {% if form.full_name.errors %}
+              <div class="text-danger small mt-1">
+                {{ form.full_name.errors|striptags }}
+              </div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Email Address</label>
+              {{ form.email }} {% if form.email.errors %}
+              <div class="text-danger small mt-1">
+                {{ form.email.errors|striptags }}
+              </div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Phone Number</label>
+              {{ form.phone }} {% if form.phone.errors %}
+              <div class="text-danger small mt-1">
+                {{ form.phone.errors|striptags }}
+              </div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Nationality</label>
+              {{ form.nationality }} {% if form.nationality.errors %}
+              <div class="text-danger small mt-1">
+                {{ form.nationality.errors|striptags }}
+              </div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-12">
+              <label class="form-label">Tour Package</label>
+              {{ form.tour_package }} {% if form.tour_package.errors %}
+              <div class="text-danger small mt-1">
+                {{ form.tour_package.errors|striptags }}
+              </div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Travel Date</label>
+              {{ form.travel_date }} {% if form.travel_date.errors %}
+              <div class="text-danger small mt-1">
+                {{ form.travel_date.errors|striptags }}
+              </div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Quantity</label>
+              {{ form.quantity }} {% if form.quantity.errors %}
+              <div class="text-danger small mt-1">
+                {{ form.quantity.errors|striptags }}
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
 
         <div class="modal-footer border-0 pt-0">
           <button
@@ -221,6 +292,3 @@
 </div>
 
 {% endblock %}
-
-
-

@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-from multiprocessing.util import DEBUG
 from pathlib import Path
 import os
 import environ
@@ -41,7 +40,6 @@ CSRF_TRUSTED_ORIGINS = env.list(
 DATABASE_URL = env.str("DATABASE_URL", default=None)
 
 if DATABASE_URL:
-    import dj_database_url
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,

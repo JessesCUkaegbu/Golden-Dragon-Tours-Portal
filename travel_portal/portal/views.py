@@ -2,10 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, forms
 from django.views.decorators.http import require_POST
 from django.contrib import messages
-from .forms import RegisterForm, TicketForm
+from .forms import RegisterForm, TicketForm, UserCreationForm
+from django.contrib.auth.models import User
 from .models import Ticket
 
 import os
@@ -21,6 +22,35 @@ import cloudinary.uploader
 def home(request):
     return render(request, 'portal/home.html')
 
+
+class RegisterForm(UserCreationForm):
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control custom-input',
+            'placeholder': 'Enter email address'
+        })
+    )
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+        widgets = {
+            'username': forms.TextInput(attrs={
+                'class': 'form-control custom-input',
+                'placeholder': 'Choose a username'
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password1'].widget.attrs.update({
+            'class': 'form-control custom-input',
+            'placeholder': 'Create a password'
+        })
+        self.fields['password2'].widget.attrs.update({
+            'class': 'form-control custom-input',
+            'placeholder': 'Confirm your password'
+        })
 
 
 def register_view(request):
