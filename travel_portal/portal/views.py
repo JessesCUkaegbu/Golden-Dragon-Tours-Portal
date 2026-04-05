@@ -108,7 +108,6 @@ def create_ticket(request):
 
 
 
-
 @login_required
 def ticket_success(request, ticket_id):
     ticket = get_object_or_404(Ticket, id=ticket_id, user=request.user)
