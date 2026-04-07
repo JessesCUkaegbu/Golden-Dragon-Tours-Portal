@@ -1,6 +1,8 @@
-{% extends 'portal/base.html' %} {% block content %}
+{% extends 'portal/base_dashboard.html' %} {% block content %}
 
 <div class="portal-layout">
+  <!-- Sidebar overlay for mobile -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
   <!-- ── SIDEBAR ── -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
@@ -11,6 +13,26 @@
         onerror="this.style.display = 'none'"
       />
       <span class="sidebar-logo-text">Golden Dragon</span>
+      <button
+        class="sidebar-close-btn"
+        id="sidebarToggle"
+        title="Close sidebar"
+      >
+        <svg
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2.5"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
     </div>
 
     <span class="sidebar-section-label">Main Menu</span>
@@ -83,15 +105,15 @@
     </div>
   </aside>
 
-  <!-- ── MAIN ── -->
-  <div class="main-content">
+  <!-- ── MAIN CONTENT ── -->
+  <div class="main-content" id="mainContent">
     <!-- Top Bar -->
     <header class="topbar">
       <div class="d-flex align-items-center gap-3">
         <button
-          class="sidebar-toggle"
-          id="sidebarToggle"
-          onclick="toggleSidebar()"
+          class="topbar-menu-btn"
+          id="sidebarOpenBtn"
+          title="Open sidebar"
         >
           <svg
             width="18"
@@ -151,175 +173,174 @@
     </header>
 
     <!-- Page Body -->
-    {% if messages %}
-    {% for message in messages %}
+   {% if messages %}
+  {% for message in messages %}
     {% if 'error' in message.tags %}
       <div class="alert alert-danger custom-alert shadow-sm">{{ message }}</div>
     {% else %}
       <div class="alert alert-success custom-alert shadow-sm">{{ message }}</div>
     {% endif %}
   {% endfor %}
-  {% endif %}
-
-      <!-- Stat Cards -->
-      <div class="stat-grid">
-        <div class="stat-card">
-          <div class="stat-card-top">
-            <div class="stat-icon gold">🎫</div>
-            <span class="stat-badge neutral">Total</span>
-          </div>
-          <div class="stat-value">{{ tickets|length }}</div>
-          <div class="stat-label">Tickets Booked</div>
+{% endif %}
+    
+    <!-- Stat Cards -->
+    <div class="stat-grid m-4">
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div class="stat-icon gold">🎫</div>
+          <span class="stat-badge neutral">Total</span>
         </div>
-
-        <div class="stat-card">
-          <div class="stat-card-top">
-            <div class="stat-icon green">✓</div>
-            <span class="stat-badge up">Active</span>
-          </div>
-          <div class="stat-value">Online</div>
-          <div class="stat-label">Account Status</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-card-top">
-            <div class="stat-icon dark">🌐</div>
-            <span class="stat-badge up">Live</span>
-          </div>
-          <div class="stat-value">Open</div>
-          <div class="stat-label">Portal Access</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-card-top">
-            <div class="stat-icon blue">📅</div>
-            <span class="stat-badge neutral">Info</span>
-          </div>
-          <div class="stat-value">{{ tickets|length|default:"0" }}</div>
-          <div class="stat-label">Active Bookings</div>
-        </div>
+        <div class="stat-value">{{ tickets|length }}</div>
+        <div class="stat-label">Tickets Booked</div>
       </div>
 
-      <!-- Content Grid -->
-      <div class="content-grid">
-        <!-- Ticket Table -->
-        <div class="panel">
-          <div class="panel-header">
-            <div>
-              <div class="panel-title">My Tickets</div>
-              <div class="panel-subtitle">
-                All your travel bookings in one place
-              </div>
-            </div>
-            <button
-              class="panel-action"
-              data-bs-toggle="modal"
-              data-bs-target="#ticketModal"
-            >
-              + New Ticket
-            </button>
-          </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div class="stat-icon green">✓</div>
+          <span class="stat-badge up">Active</span>
+        </div>
+        <div class="stat-value">Online</div>
+        <div class="stat-label">Account Status</div>
+      </div>
 
-          {% if tickets %}
-          <table class="ticket-table">
-            <thead>
-              <tr>
-                <th>Reference</th>
-                <th>Tour Package</th>
-                <th>Travel Date</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for ticket in tickets %}
-              <tr>
-                <td>
-                  <span class="ticket-ref">{{ ticket.reference_code }}</span>
-                </td>
-                <td class="ticket-package">{{ ticket.tour_package }}</td>
-                <td class="ticket-date">{{ ticket.travel_date }}</td>
-                <td><span class="ticket-status confirmed">Confirmed</span></td>
-                <td>
-                  <button
-                    class="ticket-view-btn"
-                    data-bs-toggle="modal"
-                    data-bs-target="#ticketInfoModal-{{ ticket.id }}"
-                  >
-                    View
-                  </button>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          {% else %}
-          <div class="empty-state">
-            <div class="empty-icon">🎫</div>
-            <p>No tickets yet. Book your first tour experience.</p>
-            <button
-              class="btn btn-brand px-4"
-              data-bs-toggle="modal"
-              data-bs-target="#ticketModal"
-            >
-              Get Your First Ticket
-            </button>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div class="stat-icon dark">🌐</div>
+          <span class="stat-badge up">Live</span>
+        </div>
+        <div class="stat-value">Open</div>
+        <div class="stat-label">Portal Access</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div class="stat-icon blue">📅</div>
+          <span class="stat-badge neutral">Info</span>
+        </div>
+        <div class="stat-value">{{ tickets|length|default:"0" }}</div>
+        <div class="stat-label">Active Bookings</div>
+      </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="content-grid m-4">
+      <!-- Ticket Table -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">My Tickets</div>
+            <div class="panel-subtitle">
+              All your travel bookings in one place
+            </div>
           </div>
-          {% endif %}
+          <button
+            class="panel-action"
+            data-bs-toggle="modal"
+            data-bs-target="#ticketModal"
+          >
+            + New Ticket
+          </button>
         </div>
 
-        <!-- Right Panel -->
-        <div style="display: flex; flex-direction: column; gap: 16px">
-          <!-- Profile Card -->
-          <div class="panel">
-            <div class="profile-card">
-              <div class="profile-avatar-lg">
-                {{ user.username|first|upper }}
-              </div>
-              <div class="profile-name">{{ user.username }}</div>
-              <div class="profile-email">{{ user.email }}</div>
-              <div class="profile-status">Active Account</div>
-            </div>
-          </div>
-
-          <!-- Quick Actions -->
-          <div class="panel">
-            <div class="panel-header">
-              <div class="panel-title">Quick Actions</div>
-            </div>
-            <div style="padding: 0 16px 16px">
+        {% if tickets %}
+        <table class="ticket-table">
+          <thead>
+            <tr>
+              <th>Reference</th>
+              <th>Tour Package</th>
+              <th>Travel Date</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for ticket in tickets %}
+          <tr>
+            <td><span class="ticket-ref">{{ ticket.reference_code }}</span></td>
+            <td class="ticket-package">{{ ticket.tour_package.name }}</td>
+            <td class="ticket-date">{{ ticket.travel_date }}</td>
+            <td>
+              <span class="ticket-status {{ ticket.status_display_class }}">
+                {{ ticket.get_status_display }}
+              </span>
+            </td>
+            <td>
               <button
-                class="quick-action-btn"
+                class="ticket-view-btn"
                 data-bs-toggle="modal"
-                data-bs-target="#ticketModal"
+                data-bs-target="#ticketInfoModal-{{ ticket.id }}"
               >
-                <div class="quick-action-icon">🎫</div>
-                <div class="quick-action-text">
-                  Book New Ticket
-                  <small>Fill out ticket application form</small>
-                </div>
+                View
               </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">🎫</div>
+          <p>No tickets yet. Book your first tour experience.</p>
+          <button
+            class="btn btn-brand px-4"
+            data-bs-toggle="modal"
+            data-bs-target="#ticketModal"
+          >
+            Get Your First Ticket
+          </button>
+        </div>
+        {% endif %}
+      </div>
 
-              <button class="quick-action-btn" onclick="window.print()">
-                <div class="quick-action-icon">🖨️</div>
-                <div class="quick-action-text">
-                  Print Tickets
-                  <small>Print all your booking details</small>
-                </div>
-              </button>
+      <!-- Right Panel -->
+      <div style="display: flex; flex-direction: column; gap: 16px">
+        <!-- Profile Card -->
+        <div class="panel">
+          <div class="profile-card">
+            <div class="profile-avatar-lg">{{ user.username|first|upper }}</div>
+            <div class="profile-name">{{ user.username }}</div>
+            <div class="profile-email">{{ user.email }}</div>
+            <div class="profile-status">Active Account</div>
+          </div>
+        </div>
 
-              <a
-                href="{% url 'home' %}"
-                class="quick-action-btn"
-                style="text-decoration: none"
-              >
-                <div class="quick-action-icon">🏠</div>
-                <div class="quick-action-text">
-                  Back to Home
-                  <small>Return to main landing page</small>
-                </div>
-              </a>
-            </div>
+        <!-- Quick Actions -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Quick Actions</div>
+          </div>
+          <div style="padding: 0 16px 16px">
+            <button
+              class="quick-action-btn"
+              data-bs-toggle="modal"
+              data-bs-target="#ticketModal"
+            >
+              <div class="quick-action-icon">🎫</div>
+              <div class="quick-action-text">
+                Book New Ticket
+                <small>Fill out ticket application form</small>
+              </div>
+            </button>
+
+            <button class="quick-action-btn" onclick="window.print()">
+              <div class="quick-action-icon">🖨️</div>
+              <div class="quick-action-text">
+                Print Tickets
+                <small>Print all your booking details</small>
+              </div>
+            </button>
+
+            <a
+              href="{% url 'home' %}"
+              class="quick-action-btn"
+              style="text-decoration: none"
+            >
+              <div class="quick-action-icon">🏠</div>
+              <div class="quick-action-text">
+                Back to Home
+                <small>Return to main landing page</small>
+              </div>
+            </a>
           </div>
         </div>
       </div>
@@ -391,7 +412,7 @@
               </div>
               {% endif %}
             </div>
-            <div class="col-md-12">
+            <div class="col-md-6">
               <label class="form-label">Tour Package</label>
               {{ form.tour_package }} {% if form.tour_package.errors %}
               <div class="text-danger small mt-1">
@@ -518,4 +539,17 @@
     </div>
   </div>
 </div>
-{% endfor %} {% endblock %}
+{% endfor %}
+
+{% if open_ticket_modal %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const modalElement = document.getElementById("ticketModal");
+    if (modalElement && window.bootstrap) {
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  });
+</script>
+{% endif %}
+{% endblock %}

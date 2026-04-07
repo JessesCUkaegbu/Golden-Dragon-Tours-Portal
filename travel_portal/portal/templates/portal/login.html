@@ -1,4 +1,4 @@
-{% extends 'portal/base.html' %} {% block content %}
+{% extends 'portal/base_auth.html' %} {% block content %}
 
 <div class="auth-wrapper">
   <div class="row justify-content-center">
@@ -11,9 +11,7 @@
         </div>
 
         <form method="POST" class="auth-form mt-4">
-          {% csrf_token %}
-
-          {% if form.non_field_errors %}
+          {% csrf_token %} {% if form.non_field_errors %}
           <div class="alert alert-danger custom-alert shadow-sm">
             {{ form.non_field_errors|striptags }}
           </div>
@@ -21,8 +19,7 @@
 
           <div class="mb-3">
             <label class="form-label">Username</label>
-            {{ form.username }}
-            {% if form.username.errors %}
+            {{ form.username }} {% if form.username.errors %}
             <div class="text-danger small mt-1">
               {{ form.username.errors|striptags }}
             </div>
@@ -31,15 +28,14 @@
 
           <div class="mb-3">
             <label class="form-label">Password</label>
-            {{ form.password }}
-            {% if form.password.errors %}
+            {{ form.password }} {% if form.password.errors %}
             <div class="text-danger small mt-1">
               {{ form.password.errors|striptags }}
             </div>
             {% endif %}
           </div>
 
-          <button type="submit" class="btn btn-brand-dark w-100 py-3 mt-2">
+          <button type="submit" class="btn btn-brand w-100 py-3 mt-2">
             Login
           </button>
         </form>

@@ -50,6 +50,81 @@ h5 {
   min-height: 100vh;
 }
 
+/* ── Auth Base Layout ─────────────────────── */
+.auth-body {
+  background: #faf8f5;
+  min-height: 100vh;
+}
+
+.auth-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px;
+  border-bottom: 1px solid var(--border-soft);
+  background: #fff;
+}
+
+.auth-topbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #0f0f0f;
+}
+
+.auth-topbar-logo:hover {
+  color: #7c5739;
+}
+
+.auth-topbar-back {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.auth-topbar-back:hover {
+  color: #7c5739;
+}
+
+/* .auth-page-wrapper {
+  min-height: calc(100vh - 77px);
+  display: flex;
+  align-items: center;
+} */
+
+.auth-page-wrapper .container {
+  width: 100%;
+}
+
+
+/* ── Ticket Status Badges ─────────────────── */
+.ticket-status.pending {
+  background: rgba(234, 179, 8, 0.1);
+  color: #854d0e;
+}
+
+.ticket-status.cancelled {
+  background: rgba(220, 38, 38, 0.08);
+  color: #dc2626;
+}
+
+/* ── Responsive ───────────────────────────── */
+@media (max-width: 576px) {
+  .auth-topbar {
+    padding: 16px 20px;
+  }
+
+  .auth-topbar-logo span {
+    display: none;
+  }
+}
+
 /* ─── SIDEBAR ─────────────────────────────────────────── */
 
 .sidebar {
@@ -1098,66 +1173,193 @@ h5 {
   line-height: 1.7;
 }
 
-/* ─── MOBILE SIDEBAR TOGGLE ───────────────────────────── */
+/* ── Sidebar Toggle States ──────────────────────────── */
 
-.sidebar-toggle {
-  display: none;
+/* ── Sidebar close button (inside sidebar) ── */
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 24px 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.sidebar-close-btn {
+  margin-left: auto;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.sidebar-close-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Topbar open button (hamburger) ─────── */
+.topbar-menu-btn {
   width: 38px;
   height: 38px;
   border-radius: 10px;
   border: 1px solid var(--border-soft);
   background: #fff;
+  display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.topbar-menu-btn:hover {
+  background: var(--bg-soft);
   color: var(--text-main);
 }
 
-/* ─── RESPONSIVE ──────────────────────────────────────── */
+/* ── Sidebar collapsed state ────────────── */
+.sidebar {
+  transition:
+    transform 0.3s ease,
+    width 0.3s ease;
+}
 
-@media (max-width: 1100px) {
-  .stat-grid {
-    grid-template-columns: repeat(2, 1fr);
+.sidebar.collapsed {
+  transform: translateX(-100%);
+}
+
+.main-content {
+  transition: margin-left 0.3s ease;
+}
+
+.main-content.expanded {
+  margin-left: 0;
+}
+
+/* Desktop — sidebar visible by default, collapses on toggle */
+@media (min-width: 992px) {
+  .sidebar {
+    transform: translateX(0);
+    transition:
+      width 0.3s ease,
+      transform 0.3s ease;
   }
-  .content-grid {
-    grid-template-columns: 1fr;
+
+  .sidebar.collapsed {
+    width: 0;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .main-content {
+    transition: margin-left 0.3s ease;
+  }
+
+  .main-content.sidebar-collapsed {
+    margin-left: 0;
   }
 }
 
-@media (max-width: 768px) {
+/* Mobile — sidebar hidden by default, slides in on toggle */
+@media (max-width: 991px) {
   .sidebar {
     transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    position: fixed;
+    z-index: 200;
   }
 
   .sidebar.open {
     transform: translateX(0);
   }
 
-  .sidebar-toggle {
-    display: flex;
-  }
-
   .main-content {
-    margin-left: 0;
+    margin-left: 0 !important;
   }
 
-  .page-body {
-    padding: 20px 16px;
+  /* Dark overlay behind sidebar on mobile */
+  .sidebar.open::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-width);
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: -1;
   }
+}
 
-  .topbar {
-    padding: 0 16px;
-  }
+/* ── Sidebar toggle button always visible ───────────── */
+.sidebar-toggle {
+  display: flex !important;
+}
+/* ══════════════════════════════════════════
+   MOBILE RESPONSIVENESS FIXES
+   ══════════════════════════════════════════ */
 
+/* ── Stat Grid — 2 columns on mobile ─────── */
+@media (max-width: 768px) {
+  /* Stat cards — 2 per row */
   .stat-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
 
-  .hero-title {
-    font-size: 2rem;
+  .stat-value {
+    font-size: 1.3rem;
   }
 
+  .stat-label {
+    font-size: 0.75rem;
+  }
+
+  .stat-card {
+    padding: 14px;
+  }
+
+  /* Content grid — stack vertically */
+  .content-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  /* Page body padding */
+  .page-body {
+    padding: 16px;
+  }
+
+  /* Topbar — tighter on mobile */
+  .topbar {
+    padding: 0 12px;
+    height: 56px;
+  }
+
+  .topbar-username {
+    display: none;
+  }
+
+  .topbar-user {
+    padding: 5px 8px;
+  }
+
+  .topbar-left h4 {
+    font-size: 1.1rem;
+  }
+
+  /* Ticket table — hide less important columns */
   .ticket-table th:nth-child(3),
   .ticket-table td:nth-child(3),
   .ticket-table th:nth-child(4),
@@ -1165,20 +1367,133 @@ h5 {
     display: none;
   }
 
-  .ticket-detail-grid {
-    grid-template-columns: 1fr;
+  /* Panel header wraps on small screens */
+  .panel-header {
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
-  .auth-card {
-    padding: 24px;
+  /* Ticket detail grid — single column */
+  .ticket-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Modal full width on mobile */
+  .modal-dialog {
+    margin: 10px;
+  }
+
+  /* Quick action text wraps cleanly */
+  .quick-action-btn {
+    padding: 12px 14px;
+  }
+
+  /* Sidebar always hidden on mobile until toggled */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    transform: translateX(-100%);
+    z-index: 999;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Main content takes full width on mobile */
+  .main-content {
+    margin-left: 0 !important;
+  }
+
+  /* Dark overlay when sidebar is open on mobile */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+  }
+
+  .sidebar-overlay.active {
+    display: block;
   }
 }
 
-@media (max-width: 480px) {
+/* ── Very small screens (under 400px) ──────── */
+@media (max-width: 400px) {
   .stat-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
+
   .stat-value {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
+  }
+
+  .stat-card-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .topbar-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .topbar-menu-btn {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* ── Tablet (768px - 992px) ─────────────────── */
+@media (min-width: 769px) and (max-width: 992px) {
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: fixed;
+    transform: translateX(-100%);
+    z-index: 999;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+  }
+}
+
+/* ── Desktop (992px+) — sidebar always visible ── */
+@media (min-width: 993px) {
+  .sidebar {
+    transform: translateX(0);
+    position: fixed;
+  }
+
+  .sidebar.collapsed {
+    transform: translateX(-100%);
+  }
+
+  .main-content {
+    margin-left: var(--sidebar-width);
+    transition: margin-left 0.3s ease;
+  }
+
+  .main-content.expanded {
+    margin-left: 0;
   }
 }

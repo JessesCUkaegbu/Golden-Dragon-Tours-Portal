@@ -1,5 +1,5 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -55,12 +55,12 @@
             </li>
             {% else %}
             <li class="nav-item">
-              <a class="nav-link nav-link-custom" href="{% url 'login' %}"
+              <a class="btn-home-ghost-white" href="{% url 'login' %}"
                 >Login</a
               >
             </li>
             <li class="nav-item">
-              <a class="btn btn-brand btn-sm px-3" href="{% url 'register' %}"
+              <a class="btn-home-primary" href="{% url 'register' %}"
                 >Create Account</a
               >
             </li>
@@ -72,20 +72,22 @@
 
     <main class="page-wrapper">
       <div class="container py-4">
-        {% if messages %}
-          {% for message in messages %}
-            {% if message.level_tag == 'error' %}
-              <div class="alert alert-danger custom-alert shadow-sm">
-                {{ message }}
-              </div>
-            {% else %}
-              <div class="alert alert-success custom-alert shadow-sm">
-                {{ message }}
-              </div>
-            {% endif %}
-          {% endfor %}
-        {% endif %}
-        {% block content %}{% endblock %}
+        {% if messages %} {% for message in messages %} 
+        {% if message.level_tag == 'error' %}
+        <div class="alert alert-danger custom-alert shadow-sm">
+          {{ message }}
+        </div>
+        {% else %}
+        <div class="alert alert-success custom-alert shadow-sm">
+          {{ message }}
+        </div>
+        {% endif %} 
+        {% endfor %} 
+        {% endif %} 
+
+        {% block content %}
+        
+        {% endblock %}
       </div>
     </main>
 

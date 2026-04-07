@@ -11,27 +11,37 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 3000);
     });
 
-    // ── Sidebar overlay close on mobile ─────────────────
-    document.addEventListener("click", function (e) {
-        const sidebar = document.getElementById("sidebar");
-        const toggle = document.getElementById("sidebarToggle");
-        if (
-            sidebar &&
-            sidebar.classList.contains("open") &&
-            !sidebar.contains(e.target) &&
-            toggle &&
-            !toggle.contains(e.target)
-        ) {
-            sidebar.classList.remove("open");
-        }
-    });
+    const sidebar = document.getElementById("sidebar");
+    const mainContent = document.getElementById("mainContent");
+    const closeBtn = document.getElementById("sidebarToggle");
+    const openBtn = document.getElementById("sidebarOpenBtn");
+    const overlay = document.getElementById("sidebarOverlay");
 
-    // ── Active nav link highlight ────────────────────────
-    const currentPath = window.location.pathname;
-    const navLinks = document.querySelectorAll(".sidebar-nav a");
-    navLinks.forEach(link => {
-        if (link.getAttribute("href") === currentPath) {
-            navLinks.forEach(l => l.classList.remove("active"));
-            link.classList.add("active");
+    function openSidebar() {
+        sidebar.classList.remove("collapsed");
+        sidebar.classList.add("open");
+        if (overlay) overlay.classList.add("active");
+        if (window.innerWidth >= 993 && mainContent) {
+            mainContent.classList.remove("expanded");
         }
-    });
+    }
+
+    function closeSidebar() {
+        sidebar.classList.add("collapsed");
+        sidebar.classList.remove("open");
+        if (overlay) overlay.classList.remove("active");
+        if (window.innerWidth >= 993 && mainContent) {
+            mainContent.classList.add("expanded");
+        }
+    }
+
+    // Open button (hamburger in topbar)
+    if (openBtn) openBtn.addEventListener("click", openSidebar);
+
+    // Close button (X inside sidebar)
+    if (closeBtn) closeBtn.addEventListener("click", closeSidebar);
+
+    // Clicking overlay closes sidebar on mobile
+    if (overlay) overlay.addEventListener("click", closeSidebar);
+
+});

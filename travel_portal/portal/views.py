@@ -118,23 +118,20 @@ def create_ticket(request):
         if form.is_valid():
             ticket = form.save(commit=False)
             ticket.user = request.user
+            ticket.status = 'pending'  # always starts as pending
             ticket.save()
 
             try:
-                # Generate barcode into buffer
                 code128 = barcode.get('code128', ticket.reference_code, writer=ImageWriter())
                 buffer = BytesIO()
                 code128.write(buffer)
-                buffer.seek(0)  # rewind buffer to the beginning
+                buffer.seek(0)
 
-                # Upload directly to Cloudinary
                 result = cloudinary.uploader.upload(
                     buffer,
                     public_id=f"barcodes/{ticket.reference_code}",
                     resource_type="image"
                 )
-
-                # Save the Cloudinary URL to the ticket
                 ticket.barcode_image = result['public_id']
                 ticket.save()
 
@@ -142,14 +139,23 @@ def create_ticket(request):
                 print(f"Barcode generation/upload error: {e}")
                 messages.warning(request, f'Ticket created but barcode failed: {e}')
 
-            messages.success(request, 'Ticket created successfully!')
+            messages.success(request, 'Ticket submitted successfully! Status: Pending.')
             return redirect('ticket_success', ticket_id=ticket.id)
         else:
             messages.error(request, 'Please fix the errors below.')
-            return render(request, 'portal/create_ticket.html', {'form': form})
+            tickets = Ticket.objects.filter(user=request.user).order_by('-created_at')
+            return render(
+                request,
+                'portal/dashboard.html',
+                {
+                    'form': form,
+                    'tickets': tickets,
+                    'open_ticket_modal': True,
+                },
+            )
 
-    form = TicketForm()
-    return render(request, 'portal/create_ticket.html', {'form': form})
+    return redirect('dashboard')
+
 
 
 @login_required
