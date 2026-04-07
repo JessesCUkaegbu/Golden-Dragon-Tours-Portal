@@ -8,13 +8,21 @@
     below.
   </p>
 
-  <button
-    class="btn btn-brand btn-lg mt-3"
-    data-bs-toggle="modal"
-    data-bs-target="#ticketInfoModal"
-  >
-    View Ticket Details
-  </button>
+  <div class="d-flex justify-content-center gap-3 flex-wrap mt-3">
+    <button
+      class="btn btn-brand btn-lg"
+      data-bs-toggle="modal"
+      data-bs-target="#ticketInfoModal"
+    >
+      View Ticket Details
+    </button>
+    <a
+      href="{% url 'download_ticket_pdf' ticket.id %}"
+      class="btn btn-outline-dark btn-lg"
+    >
+      Download PDF
+    </a>
+  </div>
 </div>
 
 <div class="modal fade" id="ticketInfoModal" tabindex="-1" aria-hidden="true">
@@ -82,7 +90,13 @@
         </div>
       </div>
 
-      <div class="modal-footer border-0">
+      <div class="modal-footer border-0 d-flex justify-content-between gap-3">
+        <a
+          href="{% url 'download_ticket_pdf' ticket.id %}"
+          class="btn btn-outline-dark"
+        >
+          Download PDF
+        </a>
         <a href="{% url 'dashboard' %}" class="btn btn-brand-dark"
           >Back to Dashboard</a
         >

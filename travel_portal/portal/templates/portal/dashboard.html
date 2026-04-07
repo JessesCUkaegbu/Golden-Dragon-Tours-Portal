@@ -527,7 +527,13 @@
         </div>
       </div>
 
-      <div class="modal-footer border-0" style="padding: 0 24px 24px">
+      <div class="modal-footer border-0 d-flex justify-content-between gap-3" style="padding: 0 24px 24px">
+        <a
+          href="{% url 'download_ticket_pdf' ticket.id %}"
+          class="btn btn-outline-dark"
+        >
+          Download PDF
+        </a>
         <button
           type="button"
           class="btn btn-brand-dark"
