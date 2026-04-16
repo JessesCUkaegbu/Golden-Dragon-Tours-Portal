@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body style="margin:0;padding:0;background:#f7f1e8;font-family:DM Sans,Arial,sans-serif;color:#1f1f1f;">
+    <div style="max-width:680px;margin:0 auto;padding:32px 20px;">
+      <div style="background:#ffffff;border:1px solid #e6d7bf;border-radius:28px;overflow:hidden;box-shadow:0 14px 40px rgba(22,48,32,0.08);">
+        <div style="background:#163020;padding:36px 40px;">
+          <div style="font-family:Playfair Display,Georgia,serif;font-size:34px;line-height:1.2;color:#ffffff;font-weight:700;">Golden Dragon Tours</div>
+          <div style="margin-top:8px;font-size:16px;color:#f3dfc1;">Welcome to your travel portal</div>
+        </div>
+        <div style="padding:40px;">
+          <div style="font-size:14px;letter-spacing:0.08em;text-transform:uppercase;color:#8a6f4d;font-weight:700;">Account Created</div>
+          <h1 style="margin:14px 0 16px;font-family:Playfair Display,Georgia,serif;font-size:32px;line-height:1.2;color:#163020;">Welcome, {{ user.username }}.</h1>
+          <p style="margin:0 0 16px;font-size:16px;line-height:1.8;color:#4b4b4b;">Your Golden Dragon Tours account is ready. You can now book cultural travel experiences, manage your bookings, and download your digital tickets anytime from your dashboard.</p>
+          <div style="background:#fbf7f1;border:1px solid #eadcc8;border-radius:20px;padding:24px;margin:28px 0;">
+            <div style="font-size:15px;color:#8a6f4d;font-weight:700;margin-bottom:10px;">What you can do next</div>
+            <div style="font-size:15px;line-height:1.8;color:#3a3a3a;">Book a tour ticket from your dashboard, track your booking status, and download ticket PDFs whenever you need them.</div>
+          </div>
+          <div style="margin-top:30px;">
+            <a href="{{ dashboard_url }}" style="display:inline-block;background:#163020;color:#ffffff;text-decoration:none;padding:14px 24px;border-radius:999px;font-weight:700;margin-right:12px;">Open Dashboard</a>
+            <a href="{{ login_url }}" style="display:inline-block;color:#163020;text-decoration:none;padding:14px 8px;font-weight:700;">Login Again</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

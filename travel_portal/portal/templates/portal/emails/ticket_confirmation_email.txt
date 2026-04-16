@@ -1,0 +1,12 @@
+Your Golden Dragon ticket is ready.
+
+Reference Code: {{ ticket.reference_code }}
+Tour Package: {{ ticket.tour_package }}
+Travel Date: {{ ticket.travel_date }}
+Quantity: {{ ticket.quantity }}
+Status: {{ ticket.get_status_display }}
+
+Dashboard: {{ dashboard_url }}
+Download PDF: {{ download_url }}
+
+Your PDF ticket is attached to this email.

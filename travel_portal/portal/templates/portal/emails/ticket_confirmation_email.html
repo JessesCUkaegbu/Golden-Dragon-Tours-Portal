@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body style="margin:0;padding:0;background:#f7f1e8;font-family:DM Sans,Arial,sans-serif;color:#1f1f1f;">
+    <div style="max-width:720px;margin:0 auto;padding:32px 20px;">
+      <div style="background:#ffffff;border:1px solid #e6d7bf;border-radius:28px;overflow:hidden;box-shadow:0 14px 40px rgba(22,48,32,0.08);">
+        <div style="background:#163020;padding:36px 40px;">
+          <div style="font-family:Playfair Display,Georgia,serif;font-size:34px;line-height:1.2;color:#ffffff;font-weight:700;">Golden Dragon Tours</div>
+          <div style="margin-top:8px;font-size:16px;color:#f3dfc1;">Ticket confirmation</div>
+        </div>
+        <div style="padding:40px;">
+          <div style="font-size:14px;letter-spacing:0.08em;text-transform:uppercase;color:#8a6f4d;font-weight:700;">Booking Confirmed</div>
+          <h1 style="margin:14px 0 16px;font-family:Playfair Display,Georgia,serif;font-size:32px;line-height:1.2;color:#163020;">Your ticket is ready, {{ ticket.full_name }}.</h1>
+          <p style="margin:0 0 22px;font-size:16px;line-height:1.8;color:#4b4b4b;">Thank you for booking with Golden Dragon Tours. Your digital ticket PDF is attached to this email, and the booking details are also available in your dashboard.</p>
+          <div style="background:#fbf7f1;border:1px solid #eadcc8;border-radius:22px;padding:24px;margin:28px 0;">
+            <div style="font-size:15px;color:#8a6f4d;font-weight:700;margin-bottom:16px;">Ticket Summary</div>
+            <table style="width:100%;border-collapse:collapse;font-size:15px;color:#3a3a3a;">
+              <tr><td style="padding:8px 0;font-weight:700;">Reference Code</td><td style="padding:8px 0;">{{ ticket.reference_code }}</td></tr>
+              <tr><td style="padding:8px 0;font-weight:700;">Tour Package</td><td style="padding:8px 0;">{{ ticket.tour_package }}</td></tr>
+              <tr><td style="padding:8px 0;font-weight:700;">Travel Date</td><td style="padding:8px 0;">{{ ticket.travel_date }}</td></tr>
+              <tr><td style="padding:8px 0;font-weight:700;">Quantity</td><td style="padding:8px 0;">{{ ticket.quantity }}</td></tr>
+              <tr><td style="padding:8px 0;font-weight:700;">Status</td><td style="padding:8px 0;">{{ ticket.get_status_display }}</td></tr>
+            </table>
+          </div>
+          <div style="margin-top:30px;">
+            <a href="{{ download_url }}" style="display:inline-block;background:#163020;color:#ffffff;text-decoration:none;padding:14px 24px;border-radius:999px;font-weight:700;margin-right:12px;">Download Ticket PDF</a>
+            <a href="{{ dashboard_url }}" style="display:inline-block;color:#163020;text-decoration:none;padding:14px 8px;font-weight:700;">Open Dashboard</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
