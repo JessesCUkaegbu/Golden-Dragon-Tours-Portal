@@ -1,0 +1,43 @@
+{% extends 'portal/base.html' %} {% block content %}
+
+<section class="home-section home-section--alt" id="events">
+  <div class="home-section-label">Event Listings</div>
+  <h2 class="home-section-title">Discover Upcoming Events</h2>
+  <p class="home-section-sub">
+    Browse published event tickets in the same visual style as the booking cards on the home page.
+  </p>
+
+  <div class="row g-4 mt-2">
+    {% for event in events %}
+    <div class="col-lg-4 col-md-6">
+      <div class="home-package-card {% if forloop.counter == 2 %}home-package-card--featured{% endif %}">
+        {% if forloop.counter == 2 %}<div class="home-featured-tag">Featured Event</div>{% endif %}
+        <div class="home-package-img {% cycle 'home-package-img--1' 'home-package-img--2' 'home-package-img--3' %}"{% if event.ticket_image %} style="background-image: linear-gradient(rgba(20, 14, 10, 0.30), rgba(20, 14, 10, 0.20)), url('{{ event.ticket_image.url }}');"{% endif %}>
+          <span class="home-package-duration">{{ event.event_date|date:"M d, Y" }}</span>
+        </div>
+        <div class="home-package-body">
+          <h5>{{ event.name }}</h5>
+          <p>{{ event.description|truncatechars:110 }}</p>
+          <div class="event-listing-meta">{{ event.location }}</div>
+          <div class="home-package-footer">
+            <span class="home-package-price">${{ event.ticket_price }}</span>
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="btn-home-small">Buy Now</a>
+            {% else %}
+            <a href="{% url 'register' %}" class="btn-home-small">Buy Now</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+      <div class="empty-state" style="background:#fff; border-radius:28px; padding:48px 24px;">
+        <div class="empty-icon">EV</div>
+        <p>No events have been published yet. Check back soon.</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

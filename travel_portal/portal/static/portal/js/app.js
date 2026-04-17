@@ -11,6 +11,20 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 3000);
     });
 
+    const navbar = document.querySelector(".custom-navbar");
+    if (navbar) {
+        const handleNavbarScroll = () => {
+            if (window.pageYOffset > 10) {
+                navbar.classList.add("scrolled");
+            } else {
+                navbar.classList.remove("scrolled");
+            }
+        };
+
+        handleNavbarScroll();
+        window.addEventListener("scroll", handleNavbarScroll);
+    }
+
     const sidebar = document.getElementById("sidebar");
     const mainContent = document.getElementById("mainContent");
     const closeBtn = document.getElementById("sidebarToggle");

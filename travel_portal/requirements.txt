@@ -19,6 +19,7 @@ qrcode==8.2
 requests==2.33.1
 six==1.17.0
 sqlparse==0.5.5
+stripe==15.0.1
 typing_extensions==4.15.0
 urllib3==2.6.3
 whitenoise==6.12.0

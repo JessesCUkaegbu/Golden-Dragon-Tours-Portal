@@ -27,6 +27,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: "DM Sans", sans-serif;
   background: var(--bg-page);
@@ -102,6 +106,51 @@ h5 {
   width: 100%;
 }
 
+/* ── Upgrade Banner ───────────────────────── */
+.upgrade-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #0f0f0f 0%, #2a1a0a 100%);
+  border-radius: 14px;
+  padding: 16px 22px;
+  margin-bottom: 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.upgrade-banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.upgrade-banner-text strong {
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.upgrade-banner-text span {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+}
+
+.btn-upgrade {
+  background: var(--brand);
+  color: #000;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 9px 18px;
+  border-radius: 9px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.btn-upgrade:hover {
+  background: #d9a57a;
+  color: #000;
+}
 
 /* ── Ticket Status Badges ─────────────────── */
 .ticket-status.pending {
@@ -455,12 +504,15 @@ h5 {
 .stat-icon.gold {
   background: rgba(230, 183, 143, 0.18);
 }
+
 .stat-icon.dark {
   background: rgba(0, 0, 0, 0.07);
 }
+
 .stat-icon.green {
   background: rgba(16, 185, 129, 0.1);
 }
+
 .stat-icon.blue {
   background: rgba(59, 130, 246, 0.1);
 }
@@ -478,10 +530,12 @@ h5 {
   color: #059669;
   background: rgba(16, 185, 129, 0.1);
 }
+
 .stat-badge.down {
   color: #dc2626;
   background: rgba(220, 38, 38, 0.08);
 }
+
 .stat-badge.neutral {
   color: var(--text-muted);
   background: var(--bg-soft);
@@ -955,8 +1009,18 @@ h5 {
 /* ─── NAVBAR (non-dashboard pages) ───────────────────── */
 
 .custom-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
   background: rgba(0, 0, 0, 0.95);
   padding: 14px 0;
+  transition: background 0.25s ease, padding 0.25s ease, transform 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+
+.custom-navbar.scrolled {
+  background: rgba(0, 0, 0, 0.98);
+  padding: 10px 0;
 }
 
 .brand-logo {
@@ -1056,11 +1120,13 @@ h5 {
 .hero-section {
   padding: 40px 0 20px;
 }
+
 .hero-title {
   font-size: 3rem;
   line-height: 1.15;
   margin-bottom: 18px;
 }
+
 .hero-text {
   color: var(--text-muted);
   font-size: 1.05rem;
@@ -1110,6 +1176,7 @@ h5 {
   margin-bottom: 3px;
   font-size: 0.9rem;
 }
+
 .process-item p {
   margin-bottom: 0;
   color: var(--text-muted);
@@ -1146,6 +1213,7 @@ h5 {
   margin-bottom: 6px;
   font-size: 0.95rem;
 }
+
 .mini-stat-card p,
 .feature-card p {
   margin-bottom: 0;
@@ -1306,12 +1374,14 @@ h5 {
 .sidebar-toggle {
   display: flex !important;
 }
+
 /* ══════════════════════════════════════════
    MOBILE RESPONSIVENESS FIXES
    ══════════════════════════════════════════ */
 
 /* ── Stat Grid — 2 columns on mobile ─────── */
 @media (max-width: 768px) {
+
   /* Stat cards — 2 per row */
   .stat-grid {
     grid-template-columns: repeat(2, 1fr);

@@ -928,3 +928,10 @@
   .home-footer-auth { justify-content: flex-start; }
   .home-footer-links { justify-content: flex-start; }
 }
+
+.event-listing-meta {
+  color: #7a6f63;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+}

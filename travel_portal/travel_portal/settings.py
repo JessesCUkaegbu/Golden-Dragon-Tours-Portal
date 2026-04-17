@@ -183,3 +183,10 @@ EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=False)
 EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", default=False)
 DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL", default="Golden Dragon Tours <noreply@goldendragon.local>")
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
+
+STRIPE_PUBLIC_KEY = env.str('STRIPE_PUBLIC_KEY', default='').strip()
+STRIPE_SECRET_KEY = env.str('STRIPE_SECRET_KEY', default='').strip()
+STRIPE_WEBHOOK_SECRET = env.str('STRIPE_WEBHOOK_SECRET', default='').strip()
+STRIPE_STANDARD_PRICE_ID = env.str('STRIPE_STANDARD_PRICE_ID', default='').strip()
+STRIPE_PREMIUM_PRICE_ID = env.str('STRIPE_PREMIUM_PRICE_ID', default='').strip()

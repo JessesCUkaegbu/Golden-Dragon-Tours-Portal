@@ -9,10 +9,16 @@ from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
+import stripe
+import logging
+from django.http import HttpResponse
 
 from .email_utils import send_ticket_confirmation_email, send_welcome_email
-from .forms import RegisterForm, TicketForm, UserCreationForm
-from .models import Ticket
+from .forms import EventForm, RegisterForm, TicketForm, UserCreationForm
+from .models import Event, Ticket, Subscription
 from .ticket_documents import build_ticket_pdf
 
 import barcode
@@ -20,6 +26,32 @@ import cloudinary.uploader
 from barcode.writer import ImageWriter
 from io import BytesIO
 
+logger = logging.getLogger(__name__)
+
+
+def _get_or_create_subscription(user):
+    return Subscription.objects.get_or_create(
+        user=user,
+        defaults={'plan': Subscription.PLAN_FREE, 'status': Subscription.STATUS_ACTIVE}
+    )[0]
+
+
+def _validate_stripe_config(plan):
+    price_map = {
+        'standard': settings.STRIPE_STANDARD_PRICE_ID,
+        'premium': settings.STRIPE_PREMIUM_PRICE_ID,
+    }
+
+    secret_key = settings.STRIPE_SECRET_KEY
+    price_id = price_map.get(plan)
+
+    if not secret_key or not secret_key.startswith('sk_'):
+        return None, 'Stripe is not configured correctly yet. Please update STRIPE_SECRET_KEY in your .env file.'
+
+    if not price_id or not price_id.startswith('price_'):
+        return None, f'The Stripe price for the {plan.title()} plan is missing or invalid. Please update your .env file.'
+
+    return price_id, None
 
 def home(request):
     return render(request, 'portal/home.html')
@@ -119,12 +151,33 @@ def logout_view(request):
 def dashboard(request):
     form = TicketForm()
     tickets = Ticket.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'portal/dashboard.html', {'form': form, 'tickets': tickets})
+    subscription = _get_or_create_subscription(request.user)
+    return render(request, 'portal/dashboard.html', {
+        'form': form,
+        'tickets': tickets,
+        'subscription': subscription,
+    })
 
 
 
 @login_required
 def create_ticket(request):
+    # Get or create subscription — defaults to free plan
+    sub, created = Subscription.objects.get_or_create(
+        user=request.user,
+        defaults={'plan': 'free', 'status': 'active'}
+    )
+
+    # Check ticket limit before processing form
+    if not sub.can_create_ticket:
+        limit = sub.ticket_limit
+        messages.error(
+            request,
+            f'You have reached your {limit} ticket limit for this month on the '
+            f'{sub.get_plan_display()} plan. Please upgrade to create more tickets.'
+        )
+        return redirect('pricing')
+    
     if request.method == 'POST':
         form = TicketForm(request.POST)
         if form.is_valid():
@@ -182,12 +235,68 @@ def create_ticket(request):
                 {
                     'form': form,
                     'tickets': tickets,
+                    'subscription': sub,
                     'open_ticket_modal': True,
                 },
             )
 
     return redirect('dashboard')
 
+
+
+
+
+@login_required
+def event_studio(request):
+    subscription = _get_or_create_subscription(request.user)
+    can_create_events = subscription.plan in {Subscription.PLAN_STANDARD, Subscription.PLAN_PREMIUM} and subscription.is_active
+
+    if not can_create_events:
+        messages.error(request, 'Upgrade to the Standard or Premium plan to create events.')
+        return redirect('pricing')
+
+    events = Event.objects.filter(creator=request.user).order_by('-created_at')
+    active_events = events.filter(is_active=True).count()
+    return render(request, 'portal/event_studio.html', {
+        'event_form': EventForm(),
+        'events': events,
+        'subscription': subscription,
+        'active_events': active_events,
+    })
+
+
+@login_required
+def create_event(request):
+    subscription = _get_or_create_subscription(request.user)
+    can_create_events = subscription.plan in {Subscription.PLAN_STANDARD, Subscription.PLAN_PREMIUM} and subscription.is_active
+
+    if not can_create_events:
+        messages.error(request, 'Upgrade to the Standard or Premium plan to create events.')
+        return redirect('pricing')
+
+    if request.method != 'POST':
+        return redirect('event_studio')
+
+    form = EventForm(request.POST, request.FILES)
+    if form.is_valid():
+        event = form.save(commit=False)
+        event.creator = request.user
+        event.save()
+        messages.success(request, f'{event.name} was created successfully.')
+        return redirect('event_studio')
+
+    events = Event.objects.filter(creator=request.user).order_by('-created_at')
+    return render(
+        request,
+        'portal/event_studio.html',
+        {
+            'event_form': form,
+            'events': events,
+            'subscription': subscription,
+            'active_events': events.filter(is_active=True).count(),
+            'open_event_modal': True,
+        },
+    )
 
 
 @login_required
@@ -204,3 +313,172 @@ def download_ticket_pdf(request, ticket_id):
     response = HttpResponse(pdf_buffer.getvalue(), content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="ticket-{ticket.reference_code}.pdf"'
     return response
+
+
+# ── Pricing Page ─────────────────────────────────────────
+def pricing_view(request):
+    subscription = None
+    if request.user.is_authenticated:
+        subscription = _get_or_create_subscription(request.user)
+
+    return render(request, 'portal/pricing.html', {
+        'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
+        'subscription': subscription,
+    })
+
+
+@login_required
+def create_checkout_session(request, plan):
+    price_id, config_error = _validate_stripe_config(plan)
+    if config_error:
+        messages.error(request, config_error)
+        return redirect('pricing')
+
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            customer_email=request.user.email,
+            payment_method_types=['card'],
+            line_items=[{'price': price_id, 'quantity': 1}],
+            mode='subscription',
+            success_url=request.build_absolute_uri('/subscription/success/') + '?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url=request.build_absolute_uri('/pricing/'),
+            metadata={
+                'user_id': request.user.id,
+                'plan': plan,
+            }
+        )
+        return redirect(checkout_session.url, code=303)
+
+    except stripe.error.StripeError:
+        logger.exception('Stripe checkout failed for user %s on %s plan.', request.user.id, plan)
+        messages.error(
+            request,
+            'We could not start the payment session right now. Please verify your Stripe keys and price IDs, then try again.'
+        )
+        return redirect('pricing')
+    except Exception:
+        logger.exception('Unexpected checkout failure for user %s on %s plan.', request.user.id, plan)
+        messages.error(request, 'Something went wrong while starting checkout. Please try again.')
+        return redirect('pricing')
+
+
+@login_required
+def subscription_success(request):
+    session_id = request.GET.get('session_id')
+    if not session_id:
+        return redirect('dashboard')
+
+    if not settings.STRIPE_SECRET_KEY or not settings.STRIPE_SECRET_KEY.startswith('sk_'):
+        messages.error(request, 'Stripe is not configured correctly yet. Please update STRIPE_SECRET_KEY in your .env file.')
+        return redirect('pricing')
+
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+
+    try:
+        session = stripe.checkout.Session.retrieve(session_id)
+        metadata = getattr(session, 'metadata', None)
+        plan = metadata['plan'] if metadata and 'plan' in metadata else Subscription.PLAN_FREE
+
+        if plan not in {
+            Subscription.PLAN_FREE,
+            Subscription.PLAN_STANDARD,
+            Subscription.PLAN_PREMIUM,
+        }:
+            plan = Subscription.PLAN_FREE
+
+        sub = _get_or_create_subscription(request.user)
+        sub.plan = plan
+        sub.status = 'active'
+        sub.stripe_customer_id = session.customer
+        sub.stripe_subscription_id = session.subscription
+        sub.save()
+
+        messages.success(request, f'Successfully subscribed to the {plan.title()} plan!')
+
+    except stripe.error.StripeError:
+        logger.exception('Stripe subscription activation failed for user %s.', request.user.id)
+        messages.error(request, 'Your payment was received, but we could not confirm the subscription yet. Please contact support.')
+    except Exception:
+        logger.exception('Unexpected subscription activation failure for user %s.', request.user.id)
+        messages.error(request, 'Something went wrong while activating your subscription.')
+
+    return redirect('dashboard')
+
+
+@csrf_exempt
+def stripe_webhook(request):
+    if not settings.STRIPE_SECRET_KEY or not settings.STRIPE_SECRET_KEY.startswith('sk_'):
+        logger.error('Stripe webhook called without a valid secret key configured.')
+        return HttpResponse(status=500)
+
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    payload = request.body
+    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
+        )
+    except (ValueError, stripe.error.SignatureVerificationError):
+        return HttpResponse(status=400)
+
+    if event['type'] == 'customer.subscription.deleted':
+        subscription_data = event['data']['object']
+        try:
+            sub = Subscription.objects.get(
+                stripe_subscription_id=subscription_data['id']
+            )
+            sub.plan = Subscription.PLAN_FREE
+            sub.status = Subscription.STATUS_CANCELLED
+            sub.save()
+        except Subscription.DoesNotExist:
+            pass
+
+    elif event['type'] == 'customer.subscription.updated':
+        subscription_data = event['data']['object']
+        try:
+            sub = Subscription.objects.get(
+                stripe_subscription_id=subscription_data['id']
+            )
+            sub.status = subscription_data['status']
+            sub.save()
+        except Subscription.DoesNotExist:
+            pass
+
+    return HttpResponse(status=200)
+
+
+@login_required
+def cancel_subscription(request):
+    if not settings.STRIPE_SECRET_KEY or not settings.STRIPE_SECRET_KEY.startswith('sk_'):
+        messages.error(request, 'Stripe is not configured correctly yet. Please update STRIPE_SECRET_KEY in your .env file.')
+        return redirect('pricing')
+
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+
+    try:
+        sub = request.user.subscription
+        if sub.stripe_subscription_id:
+            stripe.Subscription.cancel(sub.stripe_subscription_id)
+        sub.plan = Subscription.PLAN_FREE
+        sub.status = Subscription.STATUS_CANCELLED
+        sub.stripe_subscription_id = None
+        sub.save()
+        messages.success(request, 'Subscription cancelled. You have been moved to the Free plan.')
+    except stripe.error.StripeError:
+        logger.exception('Stripe cancellation failed for user %s.', request.user.id)
+        messages.error(request, 'We could not cancel the subscription in Stripe right now. Please try again.')
+    except Exception:
+        logger.exception('Unexpected subscription cancellation failure for user %s.', request.user.id)
+        messages.error(request, 'Something went wrong while cancelling your subscription.')
+
+    return redirect('dashboard')
+
+
+
+
+def event_list(request):
+    events = Event.objects.filter(is_active=True).order_by('event_date', '-created_at')
+    return render(request, 'portal/events.html', {'events': events})
