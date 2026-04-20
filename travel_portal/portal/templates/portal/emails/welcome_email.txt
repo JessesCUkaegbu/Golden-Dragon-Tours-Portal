@@ -1,6 +1,6 @@
-Welcome to Golden Dragon Tours, {{ user.username }}.
+Welcome to Golden Dragon Ticketing, {{ user.username }}.
 
-Your account has been created successfully. You can now book tours, manage your tickets, and download PDFs from your dashboard.
+Your account has been created successfully. You can now buy tickets, review ticket history, and manage event sales from your dashboard.
 
 Dashboard: {{ dashboard_url }}
 Login: {{ login_url }}

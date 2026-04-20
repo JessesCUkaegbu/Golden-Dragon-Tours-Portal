@@ -1,4 +1,8 @@
-{% extends 'portal/base_auth.html' %} {% block content %}
+{% extends 'portal/base/base_auth.html' %}
+
+{% load static %}
+
+{% block content %}
 
 <div class="auth-wrapper">
   <div class="row justify-content-center">
@@ -6,8 +10,8 @@
       <div class="auth-card shadow-lg">
         <div class="auth-header text-center">
           <span class="auth-badge">Create Account</span>
-          <h2>Join Golden Dragon Tours</h2>
-          <p>Register to access your dashboard and purchase tickets.</p>
+          <h2>Join Golden Dragon Ticketing</h2>
+          <p>Create your account to buy tickets, track history, and manage event sales.</p>
         </div>
 
         <form method="POST" class="auth-form mt-4">
@@ -19,38 +23,26 @@
 
           <div class="mb-3">
             <label class="form-label">Username</label>
-            {{ form.username }} {% if form.username.errors %}
-            <div class="text-danger small mt-1">
-              {{ form.username.errors|striptags }}
-            </div>
-            {% endif %}
+            {{ form.username }}{% if form.username.errors %}<div class="text-danger small mt-1">{{
+              form.username.errors|striptags }}</div>{% endif %}
           </div>
 
           <div class="mb-3">
             <label class="form-label">Email Address</label>
-            {{ form.email }} {% if form.email.errors %}
-            <div class="text-danger small mt-1">
-              {{ form.email.errors|striptags }}
-            </div>
-            {% endif %}
+            {{ form.email }}{% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors|striptags
+              }}</div>{% endif %}
           </div>
 
           <div class="mb-3">
             <label class="form-label">Password</label>
-            {{ form.password1 }} {% if form.password1.errors %}
-            <div class="text-danger small mt-1">
-              {{ form.password1.errors|striptags }}
-            </div>
-            {% endif %}
+            {{ form.password1 }}{% if form.password1.errors %}<div class="text-danger small mt-1">{{
+              form.password1.errors|striptags }}</div>{% endif %}
           </div>
 
           <div class="mb-3">
             <label class="form-label">Confirm Password</label>
-            {{ form.password2 }} {% if form.password2.errors %}
-            <div class="text-danger small mt-1">
-              {{ form.password2.errors|striptags }}
-            </div>
-            {% endif %}
+            {{ form.password2 }}{% if form.password2.errors %}<div class="text-danger small mt-1">{{
+              form.password2.errors|striptags }}</div>{% endif %}
           </div>
 
           <button type="submit" class="btn btn-brand w-100 py-3 mt-2">

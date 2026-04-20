@@ -1,111 +1,117 @@
-{% extends 'portal/base.html' %} {% block content %}
+{% extends 'portal/base/base.html' %}
+
+{% block content %}
 
 <section class="home-section" style="padding-top: 40px;">
   <div class="text-center mb-5">
     <span class="home-section-label">Pricing Plans</span>
     <h2 class="home-section-title mx-auto">Simple, transparent pricing</h2>
     <p class="home-section-sub mx-auto">
-      Upgrade anytime. Cancel anytime. No hidden fees.
+      Compare buyer benefits and organiser limits side by side. Upgrade anytime. Cancel anytime.
     </p>
   </div>
 
   <div class="home-pricing-grid">
-
-    <!-- Free -->
     <div class="home-pricing-card">
       <div class="home-pricing-header">
         <h5>Free</h5>
         <div class="home-pricing-price">$0<span>/mo</span></div>
-        <p>Perfect for one-time travellers</p>
+        <p>Best for getting started with light ticket activity</p>
       </div>
       <ul class="home-pricing-features">
-        <li class="yes">1 ticket per month</li>
-        <li class="yes">Basic tour packages</li>
-        <li class="yes">Digital barcode ticket</li>
-        <li class="yes">Booking dashboard</li>
-        <li class="no">Email confirmation</li>
-        <li class="no">PDF ticket download</li>
-        <li class="no">Priority support</li>
+        <li class="yes">Buyer: 10 tickets per month</li>
+        <li class="yes">Buyer: view ticket history</li>
+        <li class="no">Buyer: PDF ticket download</li>
+        <li class="yes">Organiser: 1 active event</li>
+        <li class="yes">Organiser: 10 tickets sold per event</li>
+        <li class="yes">Organiser: 1 ticket type</li>
+        <li class="yes">Organiser: event poster upload</li>
+        <li class="no">Organiser: sold tickets dashboard</li>
+        <li class="no">Organiser: analytics and reports</li>
+        <li class="no">Organiser: priority support</li>
       </ul>
       {% if user.is_authenticated %}
-        {% if subscription.plan == 'free' %}
-          <button class="btn-home-plan-ghost" disabled style="opacity:0.5; cursor:not-allowed;">
-            Current Plan
-          </button>
-        {% else %}
-          <a href="{% url 'cancel_subscription' %}" class="btn-home-plan-ghost"
-            onclick="return confirm('Downgrade to Free plan?')">
-            Downgrade to Free
-          </a>
-        {% endif %}
+      {% if subscription.plan == 'free' %}
+      <button class="btn-home-plan-ghost" disabled style="opacity:0.5; cursor:not-allowed;">
+        Current Plan
+      </button>
       {% else %}
-        <a href="{% url 'register' %}" class="btn-home-plan-ghost">Get Started Free</a>
+      <a href="{% url 'cancel_subscription' %}" class="btn-home-plan-ghost"
+        onclick="return confirm('Downgrade to Free plan?')">
+        Downgrade to Free
+      </a>
+      {% endif %}
+      {% else %}
+      <a href="{% url 'register' %}" class="btn-home-plan-ghost">Get Started Free</a>
       {% endif %}
     </div>
 
-    <!-- Standard -->
     <div class="home-pricing-card home-pricing-card--featured">
       <div class="home-pricing-badge">Most Popular</div>
       <div class="home-pricing-header">
         <h5>Standard</h5>
         <div class="home-pricing-price">$10.00<span>/mo</span></div>
-        <p>For frequent travellers</p>
+        <p>For growing sellers and repeat buyers</p>
       </div>
       <ul class="home-pricing-features">
-        <li class="yes">5 tickets per month</li>
-        <li class="yes">All tour packages</li>
-        <li class="yes">Digital barcode ticket</li>
-        <li class="yes">Booking dashboard</li>
-        <li class="yes">Email confirmation</li>
-        <li class="yes">PDF ticket download</li>
-        <li class="no">Priority support</li>
+        <li class="yes">Buyer: 50 tickets per month</li>
+        <li class="yes">Buyer: view ticket history</li>
+        <li class="yes">Buyer: PDF ticket download</li>
+        <li class="yes">Organiser: 10 active events</li>
+        <li class="yes">Organiser: 500 tickets sold per event</li>
+        <li class="yes">Organiser: 3 ticket types</li>
+        <li class="yes">Organiser: event poster upload</li>
+        <li class="yes">Organiser: sold tickets dashboard</li>
+        <li class="no">Organiser: analytics and reports</li>
+        <li class="no">Organiser: priority support</li>
       </ul>
       {% if user.is_authenticated %}
-        {% if subscription.plan == 'standard' %}
-          <button class="btn-home-plan" disabled style="opacity:0.6; cursor:not-allowed;">
-            Current Plan
-          </button>
-        {% else %}
-          <a href="{% url 'checkout' 'standard' %}" class="btn-home-plan">
-            Get Standard
-          </a>
-        {% endif %}
+      {% if subscription.plan == 'standard' %}
+      <button class="btn-home-plan" disabled style="opacity:0.6; cursor:not-allowed;">
+        Current Plan
+      </button>
       {% else %}
-        <a href="{% url 'register' %}" class="btn-home-plan">Get Started</a>
+      <a href="{% url 'checkout' 'standard' %}" class="btn-home-plan">
+        Get Standard
+      </a>
+      {% endif %}
+      {% else %}
+      <a href="{% url 'register' %}" class="btn-home-plan">Get Started</a>
       {% endif %}
     </div>
 
-    <!-- Premium -->
     <div class="home-pricing-card">
       <div class="home-pricing-header">
         <h5>Premium</h5>
         <div class="home-pricing-price">$15.00<span>/mo</span></div>
-        <p>For travel agencies & groups</p>
+        <p>For venues, promoters, and teams selling at scale</p>
       </div>
       <ul class="home-pricing-features">
-        <li class="yes">Unlimited tickets</li>
-        <li class="yes">All tour packages</li>
-        <li class="yes">Digital barcode ticket</li>
-        <li class="yes">Booking dashboard</li>
-        <li class="yes">Email confirmation</li>
-        <li class="yes">PDF ticket download</li>
-        <li class="yes">Priority support</li>
+        <li class="yes">Buyer: unlimited tickets</li>
+        <li class="yes">Buyer: view ticket history</li>
+        <li class="yes">Buyer: PDF ticket download</li>
+        <li class="yes">Organiser: unlimited active events</li>
+        <li class="yes">Organiser: unlimited tickets sold per event</li>
+        <li class="yes">Organiser: unlimited ticket types</li>
+        <li class="yes">Organiser: event poster upload</li>
+        <li class="yes">Organiser: sold tickets dashboard</li>
+        <li class="yes">Organiser: analytics and reports</li>
+        <li class="yes">Organiser: priority support</li>
       </ul>
       {% if user.is_authenticated %}
-        {% if subscription.plan == 'premium' %}
-          <button class="btn-home-plan-ghost" disabled style="opacity:0.5; cursor:not-allowed;">
-            Current Plan
-          </button>
-        {% else %}
-          <a href="{% url 'checkout' 'premium' %}" class="btn-home-plan-ghost">
-            Get Premium
-          </a>
-        {% endif %}
+      {% if subscription.plan == 'premium' %}
+      <button class="btn-home-plan-ghost" disabled style="opacity:0.5; cursor:not-allowed;">
+        Current Plan
+      </button>
       {% else %}
-        <a href="{% url 'register' %}" class="btn-home-plan-ghost">Get Started</a>
+      <a href="{% url 'checkout' 'premium' %}" class="btn-home-plan-ghost">
+        Get Premium
+      </a>
+      {% endif %}
+      {% else %}
+      <a href="{% url 'register' %}" class="btn-home-plan-ghost">Get Started</a>
       {% endif %}
     </div>
-
   </div>
 </section>
 

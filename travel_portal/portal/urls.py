@@ -11,6 +11,8 @@ urlpatterns = [
     path('event-studio/', views.event_studio, name='event_studio'),
     path('create-ticket/', views.create_ticket, name='create_ticket'),
     path('create-event/', views.create_event, name='create_event'),
+    path('event/<int:event_id>/edit/', views.edit_event, name='edit_event'),
+    path('event/<int:event_id>/delete/', views.delete_event, name='delete_event'),
     path('ticket-success/<int:ticket_id>/', views.ticket_success, name='ticket_success'),
     path('tickets/<int:ticket_id>/download-pdf/', views.download_ticket_pdf, name='download_ticket_pdf'),
     

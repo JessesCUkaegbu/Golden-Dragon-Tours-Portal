@@ -36,7 +36,7 @@ class Ticket(models.Model):
     full_name = models.CharField(max_length=200)
     email = models.EmailField()
     phone = models.CharField(max_length=30)
-    nationality = models.CharField(max_length=100)
+    nationality = models.CharField(max_length=100, blank=True, null=True)
     tour_package = models.ForeignKey(
         TourPackage,
         on_delete=models.SET_NULL,
@@ -44,7 +44,14 @@ class Ticket(models.Model):
         blank=True,
         related_name='tickets'
     )
-    travel_date = models.DateField()
+    event = models.ForeignKey(
+        'Event',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='tickets'
+    )
+    travel_date = models.DateField(blank=True, null=True)
     quantity = models.PositiveIntegerField(default=1)
     reference_code = models.CharField(max_length=100, unique=True, blank=True)
     barcode_image = CloudinaryField('image', blank=True, null=True)
@@ -119,9 +126,21 @@ class Subscription(models.Model):
         (STATUS_PAST_DUE, 'Past Due'),
     ]
 
-    PLAN_TICKET_LIMITS = {
+    BUYER_TICKET_LIMITS = {
         PLAN_FREE: 10,
         PLAN_STANDARD: 50,
+        PLAN_PREMIUM: None,  # unlimited
+    }
+
+    ORGANISER_EVENT_LIMITS = {
+        PLAN_FREE: 1,
+        PLAN_STANDARD: 10,
+        PLAN_PREMIUM: None,  # unlimited
+    }
+
+    ORGANISER_ATTENDEE_LIMITS = {
+        PLAN_FREE: 10,
+        PLAN_STANDARD: 500,
         PLAN_PREMIUM: None,  # unlimited
     }
 
@@ -140,7 +159,15 @@ class Subscription(models.Model):
 
     @property
     def ticket_limit(self):
-        return self.PLAN_TICKET_LIMITS.get(self.plan)
+        return self.BUYER_TICKET_LIMITS.get(self.plan)
+
+    @property
+    def max_events(self):
+        return self.ORGANISER_EVENT_LIMITS.get(self.plan)
+
+    @property
+    def max_attendees_per_event(self):
+        return self.ORGANISER_ATTENDEE_LIMITS.get(self.plan)
 
     @property
     def is_active(self):
@@ -161,6 +188,19 @@ class Subscription(models.Model):
         if self.ticket_limit is None:
             return True  # unlimited
         return self.tickets_this_month < self.ticket_limit
+
+    @property
+    def active_event_count(self):
+        return Event.objects.filter(
+            creator=self.user,
+            is_active=True
+        ).count()
+
+    @property
+    def can_create_event(self):
+        if self.max_events is None:
+            return True
+        return self.active_event_count < self.max_events
 
     @property
     def tickets_remaining(self):

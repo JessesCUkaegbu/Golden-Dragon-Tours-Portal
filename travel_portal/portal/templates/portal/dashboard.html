@@ -1,16 +1,15 @@
-{% extends 'portal/base_dashboard.html' %} {% block content %}
+{% extends 'portal/base/base_dashboard.html' %}
+
+{% load static %}
+
+{% block content %}
 
 <div class="portal-layout">
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      {% load static %}
-      <img
-        src="{% static 'portal/image/logo.png' %}"
-        alt="Golden Dragon"
-        onerror="this.style.display = 'none'"
-      />
-      <span class="sidebar-logo-text">Golden Dragon</span>
+      <img src="{% static 'portal/image/logo.png' %}" alt="Golden Dragon" onerror="this.style.display = 'none'" />
+      <span class="sidebar-logo-text">Golden Dragon Ticketing</span>
       <button class="sidebar-close-btn" id="sidebarToggle" title="Close sidebar">
         <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
@@ -24,7 +23,8 @@
       <li>
         <a href="{% url 'dashboard' %}" class="active">
           <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
           </svg>
           Dashboard
         </a>
@@ -32,7 +32,8 @@
       <li>
         <a href="#" data-bs-toggle="modal" data-bs-target="#ticketModal">
           <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
           </svg>
           My Tickets
         </a>
@@ -40,7 +41,8 @@
       <li>
         <a href="{% url 'event_list' %}">
           <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
           Events
         </a>
@@ -48,7 +50,8 @@
       <li>
         <a href="{% url 'home' %}">
           <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" />
           </svg>
           Home
         </a>
@@ -60,7 +63,7 @@
         <div class="sidebar-avatar">{{ user.username|first|upper }}</div>
         <div class="sidebar-user-info">
           <div class="sidebar-user-name">{{ user.username }}</div>
-          <div class="sidebar-user-role">Ticket Buyer</div>
+          <div class="sidebar-user-role">Ticketing Account</div>
         </div>
       </div>
     </div>
@@ -96,11 +99,11 @@
 
     {% if messages %}
     {% for message in messages %}
-      {% if 'error' in message.tags %}
-        <div class="alert alert-danger custom-alert shadow-sm">{{ message }}</div>
-      {% else %}
-        <div class="alert alert-success custom-alert shadow-sm">{{ message }}</div>
-      {% endif %}
+    {% if 'error' in message.tags %}
+    <div class="alert alert-danger custom-alert shadow-sm">{{ message }}</div>
+    {% else %}
+    <div class="alert alert-success custom-alert shadow-sm">{{ message }}</div>
+    {% endif %}
     {% endfor %}
     {% endif %}
 
@@ -111,7 +114,7 @@
           <span class="stat-badge neutral">Total</span>
         </div>
         <div class="stat-value">{{ tickets|length }}</div>
-        <div class="stat-label">Tickets Purchased</div>
+        <div class="stat-label">Tickets Bought</div>
       </div>
 
       <div class="stat-card">
@@ -120,7 +123,7 @@
           <span class="stat-badge up">Status</span>
         </div>
         <div class="stat-value">Active</div>
-        <div class="stat-label">Buyer Account</div>
+        <div class="stat-label">Account Status</div>
       </div>
 
       <div class="stat-card">
@@ -129,7 +132,7 @@
           <span class="stat-badge up">Track</span>
         </div>
         <div class="stat-value">Live</div>
-        <div class="stat-label">Confirmation Updates</div>
+        <div class="stat-label">Ticket Updates</div>
       </div>
 
       <div class="stat-card">
@@ -138,7 +141,7 @@
           <span class="stat-badge neutral">Portal</span>
         </div>
         <div class="stat-value">Open</div>
-        <div class="stat-label">Buyer Access</div>
+        <div class="stat-label">Platform Access</div>
       </div>
     </div>
 
@@ -148,7 +151,7 @@
           <div>
             <div class="panel-title">My Tickets</div>
             <div class="panel-subtitle">
-              View your purchased tickets and see when the event or tour organizer confirms them.
+              View your tickets, track their status, and keep every purchase in one organised place.
             </div>
           </div>
           <button class="panel-action" data-bs-toggle="modal" data-bs-target="#ticketModal">
@@ -161,8 +164,8 @@
           <thead>
             <tr>
               <th>Reference</th>
-              <th>Tour Package</th>
-              <th>Travel Date</th>
+              <th>Event</th>
+              <th>Date</th>
               <th>Status</th>
               <th>Action</th>
             </tr>
@@ -171,10 +174,11 @@
             {% for ticket in tickets %}
             <tr>
               <td><span class="ticket-ref">{{ ticket.reference_code }}</span></td>
-              <td class="ticket-package">{{ ticket.tour_package.name }}</td>
-              <td class="ticket-date">{{ ticket.travel_date }}</td>
+              <td class="ticket-package">{% if ticket.event %}{{ ticket.event.name }}{% elif ticket.tour_package %}{{ ticket.tour_package.name }}{% else %}Ticket Purchase{% endif %}</td>
+              <td class="ticket-date">{% if ticket.event %}{{ ticket.event.event_date }}{% else %}{{ ticket.travel_date }}{% endif %}</td>
               <td><span class="ticket-status {{ ticket.status_display_class }}">{{ ticket.get_status_display }}</span></td>
-              <td><button class="ticket-view-btn" data-bs-toggle="modal" data-bs-target="#ticketInfoModal-{{ ticket.id }}">View</button></td>
+              <td><button class="ticket-view-btn" data-bs-toggle="modal"
+                  data-bs-target="#ticketInfoModal-{{ ticket.id }}">View</button></td>
             </tr>
             {% endfor %}
           </tbody>
@@ -182,7 +186,7 @@
         {% else %}
         <div class="empty-state">
           <div class="empty-icon">TK</div>
-          <p>No tickets yet. Buy your first ticket to start receiving confirmation updates.</p>
+          <p>No tickets yet. Buy your first ticket to start building your ticket history.</p>
           <button class="btn btn-brand px-4" data-bs-toggle="modal" data-bs-target="#ticketModal">Buy Ticket</button>
         </div>
         {% endif %}
@@ -194,7 +198,7 @@
             <div class="profile-avatar-lg">{{ user.username|first|upper }}</div>
             <div class="profile-name">{{ user.username }}</div>
             <div class="profile-email">{{ user.email }}</div>
-            <div class="profile-status">Ticket Buyer</div>
+            <div class="profile-status">Buyer / Organiser</div>
           </div>
         </div>
 
@@ -207,7 +211,7 @@
               <div class="quick-action-icon">TK</div>
               <div class="quick-action-text">
                 Buy Ticket
-                <small>Submit a new booking request</small>
+                <small>Start a new ticket purchase</small>
               </div>
             </button>
 
@@ -252,19 +256,54 @@
           {% endif %}
 
           <div class="row g-3">
-            <div class="col-md-6"><label class="form-label">Full Name</label>{{ form.full_name }}{% if form.full_name.errors %}<div class="text-danger small mt-1">{{ form.full_name.errors|striptags }}</div>{% endif %}</div>
-            <div class="col-md-6"><label class="form-label">Email Address</label>{{ form.email }}{% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors|striptags }}</div>{% endif %}</div>
-            <div class="col-md-6"><label class="form-label">Phone Number</label>{{ form.phone }}{% if form.phone.errors %}<div class="text-danger small mt-1">{{ form.phone.errors|striptags }}</div>{% endif %}</div>
-            <div class="col-md-6"><label class="form-label">Nationality</label>{{ form.nationality }}{% if form.nationality.errors %}<div class="text-danger small mt-1">{{ form.nationality.errors|striptags }}</div>{% endif %}</div>
-            <div class="col-md-6"><label class="form-label">Tour Package</label>{{ form.tour_package }}{% if form.tour_package.errors %}<div class="text-danger small mt-1">{{ form.tour_package.errors|striptags }}</div>{% endif %}</div>
-            <div class="col-md-6"><label class="form-label">Travel Date</label>{{ form.travel_date }}{% if form.travel_date.errors %}<div class="text-danger small mt-1">{{ form.travel_date.errors|striptags }}</div>{% endif %}</div>
-            <div class="col-md-6"><label class="form-label">Quantity</label>{{ form.quantity }}{% if form.quantity.errors %}<div class="text-danger small mt-1">{{ form.quantity.errors|striptags }}</div>{% endif %}</div>
+            <div class="col-md-6">
+              <label class="form-label">Full Name</label>{{ form.full_name }}
+              {% if form.full_name.errors %}
+              <div class="text-danger small mt-1">{{ form.full_name.errors|striptags }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Email Address</label>{{ form.email }}
+              {% if form.email.errors %}
+              <div class="text-danger small mt-1">{{ form.email.errors|striptags }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Phone Number</label>{{ form.phone }}
+              {% if form.phone.errors %}
+              <div class="text-danger small mt-1">{{ form.phone.errors|striptags }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Nationality</label>{{ form.nationality }}
+              {% if form.nationality.errors %}
+              <div class="text-danger small mt-1">{{ form.nationality.errors|striptags }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Ticket Category</label>{{ form.tour_package }}
+              {% if form.tour_package.errors %}
+              <div class="text-danger small mt-1">{{ form.tour_package.errors|striptags }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Event Date</label>{{ form.travel_date }}
+              {% if form.travel_date.errors %}
+              <div class="text-danger small mt-1">{{ form.travel_date.errors|striptags }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Quantity</label>{{ form.quantity }}
+              {% if form.quantity.errors %}
+              <div class="text-danger small mt-1">{{ form.quantity.errors|striptags }}</div>
+              {% endif %}
+            </div>
           </div>
         </div>
 
         <div class="modal-footer border-0 pt-0" style="padding: 0 24px 24px">
           <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-brand px-4">Submit Ticket</button>
+          <button type="submit" class="btn btn-brand px-4">Complete Purchase</button>
         </div>
       </form>
     </div>
@@ -278,7 +317,7 @@
       <div class="modal-header border-0" style="padding: 24px 24px 0">
         <div>
           <span class="modal-mini-title">Digital Ticket</span>
-          <h4 class="mb-0" style="font-size: 1.2rem">Golden Dragon Tours</h4>
+          <h4 class="mb-0" style="font-size: 1.2rem">Golden Dragon Ticketing</h4>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
@@ -288,12 +327,24 @@
           <div class="row align-items-center g-4">
             <div class="col-md-7">
               <div class="ticket-detail-grid">
-                <div><small>Reference Code</small><h5>{{ ticket.reference_code }}</h5></div>
-                <div><small>Guest Name</small><h5>{{ ticket.full_name }}</h5></div>
-                <div><small>Email</small><h6>{{ ticket.email }}</h6></div>
-                <div><small>Tour Package</small><h6>{{ ticket.tour_package }}</h6></div>
-                <div><small>Travel Date</small><h6>{{ ticket.travel_date }}</h6></div>
-                <div><small>Quantity</small><h6>{{ ticket.quantity }}</h6></div>
+                <div><small>Reference Code</small>
+                  <h5>{{ ticket.reference_code }}</h5>
+                </div>
+                <div><small>Guest Name</small>
+                  <h5>{{ ticket.full_name }}</h5>
+                </div>
+                <div><small>Email</small>
+                  <h6>{{ ticket.email }}</h6>
+                </div>
+                <div><small>Event</small>
+                  <h6>{% if ticket.event %}{{ ticket.event.name }}{% elif ticket.tour_package %}{{ ticket.tour_package }}{% else %}Ticket Purchase{% endif %}</h6>
+                </div>
+                <div><small>Date</small>
+                  <h6>{% if ticket.event %}{{ ticket.event.event_date }}{% else %}{{ ticket.travel_date }}{% endif %}</h6>
+                </div>
+                <div><small>Quantity</small>
+                  <h6>{{ ticket.quantity }}</h6>
+                </div>
               </div>
             </div>
             <div class="col-md-5 text-center">

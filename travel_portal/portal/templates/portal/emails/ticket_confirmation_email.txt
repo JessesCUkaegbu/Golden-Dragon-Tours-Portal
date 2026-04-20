@@ -1,8 +1,8 @@
-Your Golden Dragon ticket is ready.
+Your Golden Dragon Ticketing ticket is ready.
 
 Reference Code: {{ ticket.reference_code }}
-Tour Package: {{ ticket.tour_package }}
-Travel Date: {{ ticket.travel_date }}
+Event: {% if ticket.event %}{{ ticket.event.name }}{% elif ticket.tour_package %}{{ ticket.tour_package }}{% else %}Ticket Purchase{% endif %}
+Date: {% if ticket.event %}{{ ticket.event.event_date }}{% else %}{{ ticket.travel_date }}{% endif %}
 Quantity: {{ ticket.quantity }}
 Status: {{ ticket.get_status_display }}
 
