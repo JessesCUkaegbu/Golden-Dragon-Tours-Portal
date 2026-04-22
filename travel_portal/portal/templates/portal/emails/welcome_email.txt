@@ -1,4 +1,4 @@
-Welcome to Golden Dragon Ticketing, {{ user.username }}.
+Welcome to Tixora, {{ user.username }}.
 
 Your account has been created successfully. You can now buy tickets, review ticket history, and manage event sales from your dashboard.
 

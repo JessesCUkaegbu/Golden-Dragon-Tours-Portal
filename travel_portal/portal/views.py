@@ -168,6 +168,7 @@ def dashboard(request):
     form = TicketForm()
     tickets = Ticket.objects.filter(user=request.user).order_by("-created_at")
     subscription = _get_or_create_subscription(request.user)
+    events = Event.objects.filter(is_active=True).order_by("event_date", "-created_at")
     return render(
         request,
         "portal/dashboard.html",
@@ -175,6 +176,7 @@ def dashboard(request):
             "form": form,
             "tickets": tickets,
             "subscription": subscription,
+            "events": events,
         },
     )
 
@@ -247,8 +249,8 @@ def create_ticket(request):
 
             try:
                 send_mail(
-                    "Ticket Confirmation - Golden Dragon Ticketing",
-                    f"Hi {ticket.full_name},\n\nYour ticket ({ticket.reference_code}) has been submitted and is currently pending.\n\nThank you for using Golden Dragon Ticketing.",
+                    "Ticket Confirmation - Tixora",
+                    f"Hi {ticket.full_name},\n\nYour ticket ({ticket.reference_code}) has been submitted and is currently pending.\n\nThank you for using Tixora.",
                     "goldendragon026@zohomail.com",
                     [ticket.email],
                     fail_silently=True,
@@ -331,17 +333,25 @@ def event_studio(request):
     subscription = _get_or_create_subscription(request.user)
 
     events = Event.objects.filter(creator=request.user).order_by("-created_at")
+    selected_event_id = request.GET.get("event")
+    sold_tickets = Ticket.objects.filter(event__creator=request.user).select_related("event", "user").order_by("-created_at")
+
+    if selected_event_id:
+        sold_tickets = sold_tickets.filter(event_id=selected_event_id)
+
     return render(
         request,
         "portal/event_studio.html",
         {
             "event_form": EventForm(),
             "events": events,
+            "sold_tickets": sold_tickets,
             "subscription": subscription,
             "can_create_event": subscription.can_create_event,
             "active_events": subscription.active_event_count,
             "active_event_count": subscription.active_event_count,
             "max_events": subscription.max_events,
+            "selected_event_id": str(selected_event_id) if selected_event_id else "",
         },
     )
 
@@ -377,8 +387,12 @@ def create_event(request):
         {
             "event_form": form,
             "events": events,
+            "sold_tickets": Ticket.objects.filter(event__creator=request.user).select_related("event", "user").order_by("-created_at"),
             "subscription": subscription,
             "active_events": events.filter(is_active=True).count(),
+            "active_event_count": subscription.active_event_count,
+            "max_events": subscription.max_events,
+            "can_create_event": subscription.can_create_event,
             "open_event_modal": True,
             "editing_event_id": None,
         },
@@ -411,8 +425,12 @@ def edit_event(request, event_id):
         {
             "event_form": form,
             "events": events,
+            "sold_tickets": Ticket.objects.filter(event__creator=request.user).select_related("event", "user").order_by("-created_at"),
             "subscription": subscription,
             "active_events": events.filter(is_active=True).count(),
+            "active_event_count": subscription.active_event_count,
+            "max_events": subscription.max_events,
+            "can_create_event": subscription.can_create_event,
             "open_event_modal": True,
             "editing_event_id": event.id,
         },
@@ -426,6 +444,30 @@ def delete_event(request, event_id):
     event_name = event.name
     event.delete()
     messages.success(request, f"{event_name} was deleted successfully.")
+    return redirect("event_studio")
+
+
+@login_required
+@require_POST
+def update_event_ticket_status(request, ticket_id, status):
+    if status not in {Ticket.STATUS_CONFIRMED, Ticket.STATUS_CANCELLED}:
+        messages.error(request, "Invalid ticket status update.")
+        return redirect("event_studio")
+
+    ticket = get_object_or_404(
+        Ticket.objects.select_related("event"),
+        id=ticket_id,
+        event__creator=request.user,
+    )
+    ticket.status = status
+    ticket.save(update_fields=["status"])
+
+    action_label = "confirmed" if status == Ticket.STATUS_CONFIRMED else "cancelled"
+    messages.success(request, f"Ticket {ticket.reference_code} was {action_label}.")
+
+    event_id = request.POST.get("event_id")
+    if event_id:
+        return redirect(f"{reverse('event_studio')}?event={event_id}")
     return redirect("event_studio")
 
 

@@ -1,4 +1,4 @@
-Your Golden Dragon Ticketing ticket is ready.
+Your Tixora ticket is ready.
 
 Reference Code: {{ ticket.reference_code }}
 Event: {% if ticket.event %}{{ ticket.event.name }}{% elif ticket.tour_package %}{{ ticket.tour_package }}{% else %}Ticket Purchase{% endif %}

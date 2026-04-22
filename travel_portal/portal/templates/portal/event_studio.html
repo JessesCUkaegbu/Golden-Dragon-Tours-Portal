@@ -10,8 +10,9 @@
   <!-- ── SIDEBAR ── -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      <img src="{% static 'portal/image/logo.png' %}" alt="Golden Dragon" onerror="this.style.display='none'" />
-      <span class="sidebar-logo-text">Golden Dragon Ticketing</span>
+      <div style="background:#ffffff; padding:8px 12px; border-radius:14px; display:flex; align-items:center; justify-content:center;">
+        <img src="{% static 'portal/image/logo.jpg' %}" alt="Tixora" onerror="this.style.display='none'" />
+      </div>
       <button class="sidebar-close-btn" id="sidebarToggle" title="Close sidebar">
         <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
@@ -22,6 +23,15 @@
     <span class="sidebar-section-label">Creator Menu</span>
 
     <ul class="sidebar-nav">
+      <li>
+        <a href="{% url 'home' %}">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          Home
+        </a>
+      </li>
       <li>
         <a href="{% url 'event_studio' %}" class="active">
           <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -138,7 +148,8 @@
           <div class="panel-header">
             <div>
               <div class="panel-title">My Events</div>
-              <div class="panel-subtitle">Create events, upload ticket artwork, set prices and manage availability.
+              <div class="panel-subtitle">Create events, upload ticket artwork, set prices and manage
+                availability.
                 {% if max_events %}
                 You are using {{ active_event_count }}/{{ max_events }} active event slots.
                 {% else %}
@@ -151,7 +162,8 @@
               + New Event
             </button>
             {% else %}
-            <a href="{% url 'pricing' %}" class="panel-action" style="opacity:0.6;" title="Upgrade to create more events">
+            <a href="{% url 'pricing' %}" class="panel-action" style="opacity:0.6;"
+              title="Upgrade to create more events">
               + New Event (Limit Reached)
             </a>
             {% endif %}
@@ -258,19 +270,103 @@
                 <div class="event-highlight-badge">Subscriber Only</div>
                 <h5>Launch your event</h5>
                 <p>
-                  Add event name, date, location, ticket price, quantity, artwork, payment number and description.
+                  Add event name, date, location, ticket price, quantity, artwork, payment number and
+                  description.
                   {% if max_events %}
                   Your current plan allows {{ max_events }} active event{% if max_events != 1 %}s{% endif %}.
                   {% endif %}
                 </p>
-                <button class="btn btn-brand w-100" data-bs-toggle="modal" data-bs-target="#eventModal" {% if not can_create_event %}disabled{% endif %}>
+                {% if can_create_event %}
+                <button class="btn btn-brand w-100" data-bs-toggle="modal" data-bs-target="#eventModal">
                   Open Event Form
                 </button>
+                {% else %}
+                <button class="btn btn-brand w-100" type="button" disabled>
+                  Open Event Form
+                </button>
+                {% endif %}
               </div>
             </div>
           </div>
 
         </div>
+      </div>
+
+      <div class="panel mt-4">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Sold Tickets</div>
+            <div class="panel-subtitle">
+              Review ticket buyers for your events and confirm or cancel purchases without opening Django admin.
+            </div>
+          </div>
+          <form method="get" class="d-flex align-items-center gap-2 flex-wrap m-0">
+            <select name="event" class="form-control custom-input" style="min-width:240px;">
+              <option value="">All events</option>
+              {% for event in events %}
+              <option value="{{ event.id }}" {% if selected_event_id == event.id|stringformat:"s" %}selected{% endif %}>
+                {{ event.name }}
+              </option>
+              {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-outline-dark btn-sm px-3">Filter</button>
+          </form>
+        </div>
+
+        {% if sold_tickets %}
+        <table class="ticket-table">
+          <thead>
+            <tr>
+              <th>Reference</th>
+              <th>Buyer</th>
+              <th>Event</th>
+              <th>Quantity</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ticket in sold_tickets %}
+            <tr>
+              <td><span class="ticket-ref">{{ ticket.reference_code }}</span></td>
+              <td>
+                <div class="event-table-name">{{ ticket.full_name }}</div>
+                <div class="event-table-meta">{{ ticket.email }}</div>
+              </td>
+              <td>
+                <div class="event-table-name">{{ ticket.event.name }}</div>
+                <div class="event-table-meta">{{ ticket.event.event_date }}</div>
+              </td>
+              <td class="ticket-date">{{ ticket.quantity }}</td>
+              <td><span class="ticket-status {{ ticket.status_display_class }}">{{ ticket.get_status_display }}</span></td>
+              <td class="ticket-actions">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                  {% if ticket.status != 'confirmed' %}
+                  <form method="post" action="{% url 'update_event_ticket_status' ticket.id 'confirmed' %}" class="m-0">
+                    {% csrf_token %}
+                    {% if selected_event_id %}<input type="hidden" name="event_id" value="{{ selected_event_id }}">{% endif %}
+                    <button type="submit" class="btn btn-brand btn-sm px-3">Confirm</button>
+                  </form>
+                  {% endif %}
+                  {% if ticket.status != 'cancelled' %}
+                  <form method="post" action="{% url 'update_event_ticket_status' ticket.id 'cancelled' %}" class="m-0">
+                    {% csrf_token %}
+                    {% if selected_event_id %}<input type="hidden" name="event_id" value="{{ selected_event_id }}">{% endif %}
+                    <button type="submit" class="btn btn-outline-dark btn-sm px-3">Cancel</button>
+                  </form>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">TK</div>
+          <p>No sold tickets yet for the selected event view.</p>
+        </div>
+        {% endif %}
       </div>
     </div>
   </div>

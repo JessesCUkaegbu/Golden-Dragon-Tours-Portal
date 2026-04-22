@@ -4,61 +4,176 @@
 
 {% block content %}
 
-<section class="home-section home-section--alt" id="events">
-  <div class="home-section-label">Event Listings</div>
-  <h2 class="home-section-title">Discover Upcoming Events</h2>
-  <p class="home-section-sub">
-    Browse live event listings and buy tickets from the same platform experience featured on the home page.
-  </p>
-  <div class="row g-4 mt-2">
+<section class="event-marketplace" id="events">
+  <div class="event-marketplace-header">
+    <span class="home-section-label">Event Listings</span>
+    <h2 class="event-marketplace-title">Discover Upcoming Events</h2>
+    <p class="event-marketplace-subtitle">
+      Search, sort, and browse live events in one clean ticket marketplace.
+    </p>
+  </div>
+
+  <div class="event-marketplace-toolbar">
+    <div class="event-search-wrap">
+      <svg class="event-search-icon" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <input
+        type="text"
+        id="eventSearchInput"
+        class="event-search-input"
+        placeholder="Search by name, location, or description..."
+      />
+    </div>
+
+    <div class="event-toolbar-actions">
+      <select id="eventSortSelect" class="event-sort-select">
+        <option value="soonest">Soonest first</option>
+        <option value="latest">Latest first</option>
+        <option value="price-low">Price: Low → High</option>
+        <option value="price-high">Price: High → Low</option>
+        <option value="name-az">Name: A → Z</option>
+      </select>
+
+      <button type="button" id="eventFilterToggle" class="event-filter-button">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4 6h16M7 12h10M10 18h4" />
+        </svg>
+        Filters
+      </button>
+    </div>
+  </div>
+
+  <div class="event-filter-panel" id="eventFilterPanel">
+    <div class="event-filter-label">Availability</div>
+    <div class="event-filter-chips">
+      <button type="button" class="event-filter-chip active" data-filter="all">All</button>
+      <button type="button" class="event-filter-chip" data-filter="available">Available</button>
+      <button type="button" class="event-filter-chip" data-filter="free">Free</button>
+      <button type="button" class="event-filter-chip" data-filter="soldout">Sold Out</button>
+    </div>
+  </div>
+
+  <div class="event-results-meta">
+    <span id="eventResultsCount">{{ events|length }} event{{ events|length|pluralize }}</span>
+  </div>
+
+  <div class="event-results-list" id="eventResultsList">
     {% for event in events %}
-    <div class="col-lg-4 col-md-6">
-      <div class="home-package-card {% if forloop.counter == 2 %}home-package-card--featured{% endif %}">
-        {% if forloop.counter == 2 %}
-        <div class="home-featured-tag">Featured Event</div>
+    <article
+      class="event-result-card"
+      data-name="{{ event.name|lower }}"
+      data-location="{{ event.location|lower }}"
+      data-description="{{ event.description|lower }}"
+      data-price="{{ event.ticket_price }}"
+      data-date="{{ event.event_date|date:'Ymd' }}"
+      data-available="{% if event.tickets_available > 0 %}true{% else %}false{% endif %}"
+      data-free="{% if event.ticket_price == 0 %}true{% else %}false{% endif %}"
+      data-soldout="{% if event.tickets_available > 0 %}false{% else %}true{% endif %}"
+    >
+      <div class="event-result-media">
+        {% if event.ticket_image %}
+        <img src="{{ event.ticket_image.url }}" alt="{{ event.name }}" class="event-result-image" />
+        {% else %}
+        <div class="event-result-image event-result-image--fallback"></div>
         {% endif %}
 
-        {% if event.ticket_image %}
-        <div class="home-package-img {% cycle 'home-package-img--1' 'home-package-img--2' 'home-package-img--3' %}"
-          style="background-image: linear-gradient(rgba(20,14,10,0.30), rgba(20,14,10,0.20)), url('{{ event.ticket_image.url }}');">
+        <div class="event-result-price-badge">
+          {% if event.ticket_price == 0 %}
+          Free
           {% else %}
-          <div class="home-package-img {% cycle 'home-package-img--1' 'home-package-img--2' 'home-package-img--3' %}">
-            {% endif %}
-            <span class="home-package-duration">{{ event.event_date|date:"M d, Y" }}</span>
-          </div>
+          ${{ event.ticket_price }}
+          {% endif %}
+        </div>
+      </div>
 
-          <div class="home-package-body">
-            <h5>{{ event.name }}</h5>
-            <p>{{ event.description|truncatechars:110 }}</p>
-            <div class="event-listing-meta">{{ event.location }}</div>
-            <div class="home-package-footer">
-              <span class="home-package-price">${{ event.ticket_price }}</span>
-              {% if user.is_authenticated %}
-              <button class="btn-home-small" data-bs-toggle="modal" data-bs-target="#ticketModal"
-                data-event-id="{{ event.id }}" data-event-name="{{ event.name }}"
-                data-event-owner-phone="{{ event.payment_phone }}">
-                Buy Now
-              </button>
+      <div class="event-result-content">
+        <div class="event-result-top">
+          <div>
+            <h3 class="event-result-title">{{ event.name }}</h3>
+            <p class="event-result-description">{{ event.description|truncatechars:120 }}</p>
+          </div>
+          <span class="event-result-status {% if event.tickets_available > 0 %}is-available{% else %}is-soldout{% endif %}">
+            {% if event.tickets_available > 0 %}Available{% else %}Sold Out{% endif %}
+          </span>
+        </div>
+
+        <div class="event-result-meta-grid">
+          <div class="event-result-meta-item">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <span>{{ event.event_date|date:"l, F j, Y" }}</span>
+          </div>
+          <div class="event-result-meta-item">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17.657 16.657L13.414 12.414a2 2 0 10-2.828 0l-4.243 4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span>{{ event.location }}</span>
+          </div>
+          <div class="event-result-meta-item">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-10V6m0 12v-2" />
+            </svg>
+            <span>
+              {% if event.ticket_price == 0 %}
+              Free entry
               {% else %}
-              <a href="{% url 'register' %}" class="btn-home-small">Buy Now</a>
+              ${{ event.ticket_price }} per ticket
               {% endif %}
-            </div>
+            </span>
+          </div>
+          <div class="event-result-meta-item">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 20h5V4H2v16h5m10 0v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6m10 0H7" />
+            </svg>
+            <span>{{ event.tickets_available }} ticket{{ event.tickets_available|pluralize }} left</span>
           </div>
         </div>
-      </div>
-      {% empty %}
-      <div class="col-12">
-        <div class="empty-state" style="background:#fff; border-radius:28px; padding:48px 24px;">
-          <div class="empty-icon">🎫</div>
-          <p>No events have been published yet. Check back soon.</p>
+
+        <div class="event-result-actions">
+          {% if user.is_authenticated %}
+          <button
+            class="event-result-buy"
+            data-bs-toggle="modal"
+            data-bs-target="#ticketModal"
+            data-event-id="{{ event.id }}"
+            data-event-name="{{ event.name }}"
+            data-event-owner-phone="{{ event.payment_phone }}"
+            {% if event.tickets_available <= 0 %}disabled{% endif %}
+          >
+            {% if event.tickets_available > 0 %}Buy Now{% else %}Sold Out{% endif %}
+          </button>
+          {% else %}
+          <a href="{% url 'register' %}" class="event-result-buy">Buy Now</a>
+          {% endif %}
         </div>
       </div>
-      {% endfor %}
+    </article>
+    {% empty %}
+    <div class="event-results-empty" id="eventEmptyState">
+      <div class="empty-icon">🎫</div>
+      <p>No events have been published yet. Check back soon.</p>
     </div>
+    {% endfor %}
+  </div>
+
+  {% if events %}
+  <div class="event-results-empty" id="eventNoMatches" style="display:none;">
+    <div class="empty-icon">🔎</div>
+    <p>No events match your current search or filters.</p>
+  </div>
+  {% endif %}
 </section>
 
-
-<!-- ── Buy Ticket Modal ─────────────────────────── -->
 <div class="modal fade" id="ticketModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content custom-modal">
@@ -75,8 +190,6 @@
         </div>
 
         <div class="modal-body pt-3" style="padding:20px 24px;">
-
-          <!-- Error display -->
           <div id="formErrors" class="alert alert-danger custom-alert shadow-sm" style="display:none;"></div>
 
           <div class="row g-3">
@@ -97,7 +210,6 @@
               {{ form.quantity }}
             </div>
 
-            <!-- Hidden fields — auto-filled by JS -->
             <div style="display:none;">
               {{ form.nationality }}
               {{ form.tour_package }}
@@ -117,7 +229,6 @@
   </div>
 </div>
 
-<!-- ── Payment Instructions Modal ──────────────── -->
 <div class="modal fade" id="paymentInstructionModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
   data-bs-keyboard="false">
   <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -131,8 +242,6 @@
       </div>
 
       <div class="modal-body pt-3" style="padding:20px 24px;">
-
-        <!-- Success icon -->
         <div class="text-center mb-4">
           <div
             style="width:64px;height:64px;background:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:1.5rem;color:#e6b78f;">
@@ -141,7 +250,6 @@
           <p class="text-muted" style="font-size:0.9rem;">Your ticket is pending payment confirmation.</p>
         </div>
 
-        <!-- Payment number -->
         <div style="background:#faf8f5;border:1px solid #ece7e2;border-radius:14px;padding:20px;margin-bottom:16px;">
           <p
             style="font-size:0.78rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#9ca3af;margin-bottom:6px;">
@@ -152,7 +260,6 @@
           </p>
         </div>
 
-        <!-- Next steps -->
         <div style="background:#fff8f0;border:1px solid #f3d9b8;border-radius:14px;padding:20px;">
           <p style="font-size:0.82rem;font-weight:700;color:#7c5739;margin-bottom:10px;">Next Steps</p>
           <ol style="font-size:0.875rem;color:#374151;line-height:1.9;margin:0;padding-left:18px;">
@@ -166,7 +273,6 @@
         <p class="text-muted mt-3 mb-0" style="font-size:0.8rem;">
           Ticket reference: <strong id="ticketRefDisplay">—</strong>
         </p>
-
       </div>
 
       <div class="modal-footer border-0 pt-0" style="padding:0 24px 24px;">
@@ -179,17 +285,124 @@
   </div>
 </div>
 
-
 <script>
   const buyEventModal = document.getElementById('ticketModal');
   const paymentModal = document.getElementById('paymentInstructionModal');
   const form = document.getElementById('eventTicketForm');
   const submitBtn = document.getElementById('submitTicketBtn');
   const formErrors = document.getElementById('formErrors');
+  const searchInput = document.getElementById('eventSearchInput');
+  const sortSelect = document.getElementById('eventSortSelect');
+  const filterToggle = document.getElementById('eventFilterToggle');
+  const filterPanel = document.getElementById('eventFilterPanel');
+  const filterChips = document.querySelectorAll('.event-filter-chip');
+  const resultsList = document.getElementById('eventResultsList');
+  const resultCards = Array.from(document.querySelectorAll('.event-result-card'));
+  const resultsCount = document.getElementById('eventResultsCount');
+  const noMatches = document.getElementById('eventNoMatches');
 
   let currentEventPhone = '';
+  let activeFilter = 'all';
 
-  // ── Populate modal when Buy Now clicked ──────────────
+  function parsePrice(card) {
+    return Number(card.dataset.price || 0);
+  }
+
+  function parseDate(card) {
+    return Number(card.dataset.date || 0);
+  }
+
+  function matchesAvailability(card) {
+    if (activeFilter === 'all') return true;
+    if (activeFilter === 'available') return card.dataset.available === 'true';
+    if (activeFilter === 'free') return card.dataset.free === 'true';
+    if (activeFilter === 'soldout') return card.dataset.soldout === 'true';
+    return true;
+  }
+
+  function matchesSearch(card, term) {
+    if (!term) return true;
+    const haystack = [
+      card.dataset.name || '',
+      card.dataset.location || '',
+      card.dataset.description || ''
+    ].join(' ');
+    return haystack.includes(term);
+  }
+
+  function sortCards(cards) {
+    const sorted = [...cards];
+    switch (sortSelect.value) {
+      case 'latest':
+        sorted.sort((a, b) => parseDate(b) - parseDate(a));
+        break;
+      case 'price-low':
+        sorted.sort((a, b) => parsePrice(a) - parsePrice(b));
+        break;
+      case 'price-high':
+        sorted.sort((a, b) => parsePrice(b) - parsePrice(a));
+        break;
+      case 'name-az':
+        sorted.sort((a, b) => (a.dataset.name || '').localeCompare(b.dataset.name || ''));
+        break;
+      case 'soonest':
+      default:
+        sorted.sort((a, b) => parseDate(a) - parseDate(b));
+        break;
+    }
+    return sorted;
+  }
+
+  function updateEventList() {
+    if (!resultsList) return;
+
+    const searchTerm = (searchInput?.value || '').trim().toLowerCase();
+    const filtered = resultCards.filter((card) => matchesSearch(card, searchTerm) && matchesAvailability(card));
+    const sorted = sortCards(filtered);
+
+    resultCards.forEach((card) => {
+      card.style.display = 'none';
+    });
+
+    sorted.forEach((card) => {
+      card.style.display = '';
+      resultsList.appendChild(card);
+    });
+
+    if (resultsCount) {
+      resultsCount.textContent = `${sorted.length} event${sorted.length === 1 ? '' : 's'}`;
+    }
+
+    if (noMatches) {
+      noMatches.style.display = sorted.length ? 'none' : 'block';
+    }
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', updateEventList);
+  }
+
+  if (sortSelect) {
+    sortSelect.addEventListener('change', updateEventList);
+  }
+
+  filterChips.forEach((chip) => {
+    chip.addEventListener('click', function () {
+      filterChips.forEach((item) => item.classList.remove('active'));
+      chip.classList.add('active');
+      activeFilter = chip.dataset.filter || 'all';
+      updateEventList();
+    });
+  });
+
+  if (filterToggle && filterPanel) {
+    filterToggle.addEventListener('click', function () {
+      filterPanel.classList.toggle('is-open');
+    });
+  }
+
+  updateEventList();
+
   if (buyEventModal) {
     buyEventModal.addEventListener('show.bs.modal', function (e) {
       const btn = e.relatedTarget;
@@ -200,7 +413,6 @@
       document.getElementById('eventIdInput').value = eventId;
       document.getElementById('modalEventName').textContent = eventName;
 
-      // Reset form and errors
       form.reset();
       document.getElementById('eventIdInput').value = eventId;
       formErrors.style.display = 'none';
@@ -209,12 +421,10 @@
     });
   }
 
-  // ── Submit via AJAX so we can show payment modal ─────
   if (form) {
     form.addEventListener('submit', function (e) {
       e.preventDefault();
 
-      // Show loading state
       submitBtn.disabled = true;
       submitBtn.textContent = 'Submitting...';
       formErrors.style.display = 'none';
@@ -231,20 +441,16 @@
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            // Hide ticket modal
             const ticketModalInstance = bootstrap.Modal.getInstance(buyEventModal);
             ticketModalInstance.hide();
 
-            // Show payment instruction modal
             setTimeout(() => {
               document.getElementById('paymentPhoneDisplay').textContent = currentEventPhone;
               document.getElementById('ticketRefDisplay').textContent = data.reference_code || '—';
               const paymentModalInstance = new bootstrap.Modal(paymentModal);
               paymentModalInstance.show();
             }, 400);
-
           } else {
-            // Show errors in modal
             formErrors.style.display = 'block';
             formErrors.textContent = data.error || 'Something went wrong. Please try again.';
             submitBtn.disabled = false;

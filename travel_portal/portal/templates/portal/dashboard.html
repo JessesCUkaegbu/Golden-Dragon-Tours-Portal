@@ -8,8 +8,9 @@
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      <img src="{% static 'portal/image/logo.png' %}" alt="Golden Dragon" onerror="this.style.display = 'none'" />
-      <span class="sidebar-logo-text">Golden Dragon Ticketing</span>
+      <div style="background:#ffffff; padding:8px 12px; border-radius:14px; display:flex; align-items:center; justify-content:center;">
+        <img src="{% static 'portal/image/logo.jpg' %}" alt="Tixora" onerror="this.style.display = 'none'" />
+      </div>
       <button class="sidebar-close-btn" id="sidebarToggle" title="Close sidebar">
         <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
@@ -240,72 +241,121 @@
 <div class="modal fade" id="ticketModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content custom-modal">
-      <form method="POST" action="{% url 'create_ticket' %}">
+      <form id="dashboardTicketForm">
         {% csrf_token %}
+        <input type="hidden" name="event_id" id="dashboardEventIdInput" value="">
+
         <div class="modal-header border-0 pb-0" style="padding: 24px 24px 0">
           <div>
-            <span class="modal-mini-title">Ticket Purchase</span>
+            <span class="modal-mini-title">Event Ticket Purchase</span>
             <h4 class="mb-0" style="font-size: 1.3rem">Buy Your Ticket</h4>
           </div>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
 
         <div class="modal-body pt-3" style="padding: 20px 24px">
-          {% if form.non_field_errors %}
-          <div class="alert alert-danger custom-alert shadow-sm">{{ form.non_field_errors|striptags }}</div>
-          {% endif %}
+          <div id="dashboardFormErrors" class="alert alert-danger custom-alert shadow-sm" style="display:none;"></div>
 
           <div class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label">Full Name</label>{{ form.full_name }}
-              {% if form.full_name.errors %}
-              <div class="text-danger small mt-1">{{ form.full_name.errors|striptags }}</div>
-              {% endif %}
+            <div class="col-12">
+              <label class="form-label">Select Event</label>
+              <select class="form-control custom-input" id="dashboardEventSelect">
+                <option value="">Choose an event</option>
+                {% for event in events %}
+                <option
+                  value="{{ event.id }}"
+                  data-event-name="{{ event.name|escape }}"
+                  data-event-owner-phone="{{ event.payment_phone|escape }}"
+                >
+                  {{ event.name }} - {{ event.event_date }} - ${{ event.ticket_price }}
+                </option>
+                {% endfor %}
+              </select>
             </div>
             <div class="col-md-6">
-              <label class="form-label">Email Address</label>{{ form.email }}
-              {% if form.email.errors %}
-              <div class="text-danger small mt-1">{{ form.email.errors|striptags }}</div>
-              {% endif %}
+              <label class="form-label">Full Name</label>
+              {{ form.full_name }}
             </div>
             <div class="col-md-6">
-              <label class="form-label">Phone Number</label>{{ form.phone }}
-              {% if form.phone.errors %}
-              <div class="text-danger small mt-1">{{ form.phone.errors|striptags }}</div>
-              {% endif %}
+              <label class="form-label">Email Address</label>
+              {{ form.email }}
             </div>
             <div class="col-md-6">
-              <label class="form-label">Nationality</label>{{ form.nationality }}
-              {% if form.nationality.errors %}
-              <div class="text-danger small mt-1">{{ form.nationality.errors|striptags }}</div>
-              {% endif %}
+              <label class="form-label">Phone Number</label>
+              {{ form.phone }}
             </div>
             <div class="col-md-6">
-              <label class="form-label">Ticket Category</label>{{ form.tour_package }}
-              {% if form.tour_package.errors %}
-              <div class="text-danger small mt-1">{{ form.tour_package.errors|striptags }}</div>
-              {% endif %}
+              <label class="form-label">Quantity</label>
+              {{ form.quantity }}
             </div>
-            <div class="col-md-6">
-              <label class="form-label">Event Date</label>{{ form.travel_date }}
-              {% if form.travel_date.errors %}
-              <div class="text-danger small mt-1">{{ form.travel_date.errors|striptags }}</div>
-              {% endif %}
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Quantity</label>{{ form.quantity }}
-              {% if form.quantity.errors %}
-              <div class="text-danger small mt-1">{{ form.quantity.errors|striptags }}</div>
-              {% endif %}
+
+            <div style="display:none;">
+              {{ form.nationality }}
+              {{ form.tour_package }}
+              {{ form.travel_date }}
             </div>
           </div>
         </div>
 
         <div class="modal-footer border-0 pt-0" style="padding: 0 24px 24px">
           <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-brand px-4">Complete Purchase</button>
+          <button type="submit" class="btn btn-brand px-4" id="dashboardSubmitTicketBtn">Proceed to Payment</button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="dashboardPaymentInstructionModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+  data-bs-keyboard="false">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content custom-modal">
+      <div class="modal-header border-0 pb-0" style="padding:24px 24px 0;">
+        <div>
+          <span class="modal-mini-title">Payment Instructions</span>
+          <h4 class="mb-0" style="font-size:1.3rem;">Complete Your Payment</h4>
+        </div>
+      </div>
+
+      <div class="modal-body pt-3" style="padding:20px 24px;">
+        <div class="text-center mb-4">
+          <div
+            style="width:64px;height:64px;background:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:1.5rem;color:#e6b78f;">
+            ✓</div>
+          <h5 style="font-weight:700;">Ticket Submitted!</h5>
+          <p class="text-muted" style="font-size:0.9rem;">Your ticket is pending payment confirmation.</p>
+        </div>
+
+        <div style="background:#faf8f5;border:1px solid #ece7e2;border-radius:14px;padding:20px;margin-bottom:16px;">
+          <p
+            style="font-size:0.78rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#9ca3af;margin-bottom:6px;">
+            Payment Mobile Number
+          </p>
+          <p style="font-size:1.3rem;font-weight:700;color:#0f0f0f;margin:0;" id="dashboardPaymentPhoneDisplay">
+            —
+          </p>
+        </div>
+
+        <div style="background:#fff8f0;border:1px solid #f3d9b8;border-radius:14px;padding:20px;">
+          <p style="font-size:0.82rem;font-weight:700;color:#7c5739;margin-bottom:10px;">Next Steps</p>
+          <ol style="font-size:0.875rem;color:#374151;line-height:1.9;margin:0;padding-left:18px;">
+            <li>Contact the event organiser at the number above</li>
+            <li>Make payment for your ticket(s)</li>
+            <li>Your ticket status will be updated once payment is confirmed</li>
+            <li>You'll receive a confirmation email with your digital ticket</li>
+          </ol>
+        </div>
+
+        <p class="text-muted mt-3 mb-0" style="font-size:0.8rem;">
+          Ticket reference: <strong id="dashboardTicketRefDisplay">—</strong>
+        </p>
+      </div>
+
+      <div class="modal-footer border-0 pt-0" style="padding:0 24px 24px;">
+        <a href="{% url 'dashboard' %}" class="btn btn-brand w-100">
+          Go to My Tickets →
+        </a>
+      </div>
     </div>
   </div>
 </div>
@@ -317,7 +367,7 @@
       <div class="modal-header border-0" style="padding: 24px 24px 0">
         <div>
           <span class="modal-mini-title">Digital Ticket</span>
-          <h4 class="mb-0" style="font-size: 1.2rem">Golden Dragon Ticketing</h4>
+          <h4 class="mb-0" style="font-size: 1.2rem">Tixora</h4>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
@@ -377,4 +427,99 @@
   });
 </script>
 {% endif %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const ticketModal = document.getElementById('ticketModal');
+    const paymentModal = document.getElementById('dashboardPaymentInstructionModal');
+    const form = document.getElementById('dashboardTicketForm');
+    const eventSelect = document.getElementById('dashboardEventSelect');
+    const eventIdInput = document.getElementById('dashboardEventIdInput');
+    const submitBtn = document.getElementById('dashboardSubmitTicketBtn');
+    const formErrors = document.getElementById('dashboardFormErrors');
+
+    let currentEventPhone = '';
+
+    if (ticketModal) {
+      ticketModal.addEventListener('show.bs.modal', function () {
+        if (form) {
+          form.reset();
+        }
+        if (eventIdInput) {
+          eventIdInput.value = '';
+        }
+        if (formErrors) {
+          formErrors.style.display = 'none';
+          formErrors.textContent = '';
+        }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Proceed to Payment';
+        }
+        currentEventPhone = '';
+      });
+    }
+
+    if (eventSelect) {
+      eventSelect.addEventListener('change', function () {
+        const selectedOption = eventSelect.options[eventSelect.selectedIndex];
+        eventIdInput.value = selectedOption.value || '';
+        currentEventPhone = selectedOption.dataset.eventOwnerPhone || 'Contact event organiser';
+      });
+    }
+
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        if (!eventIdInput.value) {
+          formErrors.style.display = 'block';
+          formErrors.textContent = 'Please choose an event before continuing.';
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+        formErrors.style.display = 'none';
+
+        const formData = new FormData(form);
+
+        fetch("{% url 'create_ticket' %}", {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+          }
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              const ticketModalInstance = bootstrap.Modal.getInstance(ticketModal);
+              if (ticketModalInstance) {
+                ticketModalInstance.hide();
+              }
+
+              setTimeout(() => {
+                document.getElementById('dashboardPaymentPhoneDisplay').textContent = currentEventPhone || 'Contact event organiser';
+                document.getElementById('dashboardTicketRefDisplay').textContent = data.reference_code || '—';
+                const paymentModalInstance = new bootstrap.Modal(paymentModal);
+                paymentModalInstance.show();
+              }, 400);
+            } else {
+              formErrors.style.display = 'block';
+              formErrors.textContent = data.error || 'Something went wrong. Please try again.';
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Proceed to Payment';
+            }
+          })
+          .catch(() => {
+            formErrors.style.display = 'block';
+            formErrors.textContent = 'Network error. Please check your connection and try again.';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Proceed to Payment';
+          });
+      });
+    }
+  });
+</script>
 {% endblock %}

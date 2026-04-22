@@ -34,7 +34,7 @@ def send_welcome_email(user, dashboard_url, login_url):
         "login_url": login_url,
     }
     return _send_portal_email(
-        subject="Welcome to Golden Dragon Ticketing",
+        subject="Welcome to Tixora",
         to_email=user.email,
         text_template="portal/emails/welcome_email.txt",
         html_template="portal/emails/welcome_email.html",
@@ -53,7 +53,7 @@ def send_ticket_confirmation_email(ticket, dashboard_url, download_url):
     attachments = [(attachment_name, pdf_buffer.getvalue(), "application/pdf")]
 
     return _send_portal_email(
-        subject=f"Your Golden Dragon Ticketing ticket {ticket.reference_code}",
+        subject=f"Your Tixora ticket {ticket.reference_code}",
         to_email=ticket.email,
         text_template="portal/emails/ticket_confirmation_email.txt",
         html_template="portal/emails/ticket_confirmation_email.html",
