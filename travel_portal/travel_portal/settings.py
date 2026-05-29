@@ -189,3 +189,5 @@ STRIPE_SECRET_KEY = env.str('STRIPE_SECRET_KEY', default='').strip()
 STRIPE_WEBHOOK_SECRET = env.str('STRIPE_WEBHOOK_SECRET', default='').strip()
 STRIPE_STANDARD_PRICE_ID = env.str('STRIPE_STANDARD_PRICE_ID', default='').strip()
 STRIPE_PREMIUM_PRICE_ID = env.str('STRIPE_PREMIUM_PRICE_ID', default='').strip()
+
+LOGIN_REDIRECT_URL
