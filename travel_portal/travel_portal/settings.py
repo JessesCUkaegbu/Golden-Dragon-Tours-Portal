@@ -28,10 +28,10 @@ SECRET_KEY = env.str("SECRET_KEY")
 IS_PRODUCTION = env.bool("IS_PRODUCTION", default=False)
 DEBUG = not IS_PRODUCTION
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["127.0.0.1", "localhost"])
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["127.0.0.1", "localhost", "tixora.org", "www.tixora.org"])
 CSRF_TRUSTED_ORIGINS = env.list(
     "CSRF_TRUSTED_ORIGINS",
-    default=["http://127.0.0.1:8000", "http://localhost:8000"]
+    default=["http://127.0.0.1:8000", "http://localhost:8000", "https://tixora.org", "https://www.tixora.org"]
 )
 
 # Database — same pattern as your example
