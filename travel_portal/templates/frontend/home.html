@@ -1,0 +1,404 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="wrapper">
+	<section class="home-hero">
+		<div class="row align-items-center g-5">
+			<div class="col-lg-6" data-aos="fade-right">
+				<div class="home-hero-copy">
+					<span class="home-badge">Modern Ticket-Selling Platform</span>
+					<h1 class="home-hero-title">
+						Sell, manage, and deliver
+						<span class="home-title-accent">event tickets</span>
+						with confidence
+					</h1>
+					<p class="home-hero-text">
+						Power ticket sales for concerts, conferences, festivals, and live experiences.
+						Buyers get smooth checkout and organisers get the tools to launch, track, and grow.
+					</p>
+					<div class="home-hero-actions">
+						<a href="{% url 'register' %}" class="btn-home-primary">
+							Get Started
+							<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+							</svg>
+						</a>
+						<a href="{% url 'login' %}" class="btn-home-ghost">Login</a>
+					</div>
+					<div class="home-trust-strip">
+						<div class="home-trust-item">
+							<span class="home-trust-num">10K+</span>
+							<span class="home-trust-label">Tickets Managed</span>
+						</div>
+						<div class="home-trust-divider"></div>
+						<div class="home-trust-item">
+							<span class="home-trust-num">500</span>
+							<span class="home-trust-label">Tickets Per Event</span>
+						</div>
+						<div class="home-trust-divider"></div>
+						<div class="home-trust-item">
+							<span class="home-trust-num">24/7</span>
+							<span class="home-trust-label">Launch Ready</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-6" data-aos="fade-left">
+				<div class="home-process-card">
+					<div class="home-process-card-header">
+						<span class="home-card-tag">Ticketing Workflow</span>
+						<h3>Launch and manage tickets instantly</h3>
+						<p>Set up events, publish ticket inventory, and deliver digital access in a few simple steps.</p>
+					</div>
+					<div class="home-steps">
+						<div class="home-step">
+							<div class="home-step-num">01</div>
+							<div class="home-step-line"></div>
+							<div class="home-step-body"><h6>Create Event</h6><p>Set event details, sales limits, poster artwork, and ticket types quickly.</p></div>
+						</div>
+						<div class="home-step">
+							<div class="home-step-num">02</div>
+							<div class="home-step-line"></div>
+							<div class="home-step-body"><h6>Publish Tickets</h6><p>Launch your sale and start accepting buyer requests right away.</p></div>
+						</div>
+						<div class="home-step">
+							<div class="home-step-num">03</div>
+							<div class="home-step-line"></div>
+							<div class="home-step-body"><h6>Track Sales</h6><p>Keep ticket history organised and monitor sold-ticket activity from one dashboard.</p></div>
+						</div>
+						<div class="home-step">
+							<div class="home-step-num">04</div>
+							<div class="home-step-line last"></div>
+							<div class="home-step-body"><h6>Check In Fast</h6><p>Use digital barcodes for quick entry and a smoother event-day experience.</p></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="home-section" id="features">
+		<div class="home-section-label">Why Choose Us</div>
+		<h2 class="home-section-title">Everything you need for modern ticket sales</h2>
+		<div class="home-features-grid">
+			<div class="home-feature-card home-feature-card--accent">
+				<div class="home-feature-icon">TI</div>
+				<h4>Instant Digital Tickets</h4>
+				<p>Tickets are created fast with barcode-ready access for buyers and organisers.</p>
+			</div>
+			<div class="home-feature-card">
+				<div class="home-feature-icon">SD</div>
+				<h4>Sold Tickets Dashboard</h4>
+				<p>Standard and Premium plans unlock better sales visibility so organisers can stay in control.</p>
+			</div>
+			<div class="home-feature-card">
+				<div class="home-feature-icon">PD</div>
+				<h4>PDF Downloads</h4>
+				<p>Eligible plans include PDF ticket downloads so buyers can save and share access more easily.</p>
+			</div>
+			<div class="home-feature-card">
+				<div class="home-feature-icon">TP</div>
+				<h4>Flexible Ticket Types</h4>
+				<p>Start simple or expand to multiple ticket categories as your event business grows.</p>
+			</div>
+			<div class="home-feature-card">
+				<div class="home-feature-icon">PO</div>
+				<h4>Poster Uploads</h4>
+				<p>Give every event a polished launch with poster uploads included across all plans.</p>
+			</div>
+			<div class="home-feature-card">
+				<div class="home-feature-icon">SC</div>
+				<h4>Secure Buyer History</h4>
+				<p>Keep buyer activity and organiser records together in one secure, easy-to-use platform.</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="home-section home-section--alt" id="packages">
+		<div class="home-section-label">Built For Both Sides</div>
+		<h2 class="home-section-title">A better experience for buyers and organisers</h2>
+		<p class="home-section-sub">Every plan supports ticket buyers and event organisers with the tools that matter most.</p>
+
+		<div class="row g-4 mt-2">
+			<div class="col-lg-4 col-md-6">
+				<div class="home-package-card">
+					<div class="home-package-img home-package-img--1">
+						<span class="home-package-duration">For Buyers</span>
+					</div>
+					<div class="home-package-body">
+						<h5>Fast Ticket Buying</h5>
+						<p>Buy tickets, track ticket history, and upgrade to PDF downloads when you need more flexibility.</p>
+						<div class="home-package-footer">
+							<span class="home-package-price">Free to start</span>
+							<a href="{% url 'register' %}" class="btn-home-small">Start Buying</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-6">
+				<div class="home-package-card home-package-card--featured">
+					<div class="home-featured-tag">Most Popular</div>
+					<div class="home-package-img home-package-img--2">
+						<span class="home-package-duration">For Organisers</span>
+					</div>
+					<div class="home-package-body">
+						<h5>Smarter Event Sales</h5>
+						<p>Run active events, upload posters, manage ticket types, and track sales from one dashboard.</p>
+						<div class="home-package-footer">
+							<span class="home-package-price">Ready to scale</span>
+							<a href="{% url 'pricing' %}" class="btn-home-small">View Plans</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-6">
+				<div class="home-package-card">
+					<div class="home-package-img home-package-img--3">
+						<span class="home-package-duration">For Teams</span>
+					</div>
+					<div class="home-package-body">
+						<h5>Premium Growth Tools</h5>
+						<p>Unlock unlimited scale, analytics, reports, and priority support for larger ticket operations.</p>
+						<div class="home-package-footer">
+							<span class="home-package-price">Unlimited scale</span>
+							<a href="{% url 'pricing' %}" class="btn-home-small">Compare Plans</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="home-section" id="pricing">
+		<div class="home-section-label">Pricing Plans</div>
+		<h2 class="home-section-title">Simple, transparent pricing</h2>
+		<p class="home-section-sub">Choose the plan that fits your ticket volume and organiser needs. Upgrade or cancel anytime.</p>
+		<div class="home-pricing-grid">
+			<div class="home-pricing-card">
+				<div class="home-pricing-header">
+					<h5>Free</h5>
+					<div class="home-pricing-price">$0<span>/mo</span></div>
+					<p>Best for getting started with light ticket activity</p>
+				</div>
+				<ul class="home-pricing-features">
+					<li class="yes">Buyer: 10 tickets per month</li>
+					<li class="yes">Buyer: view ticket history</li>
+					<li class="no">Buyer: PDF ticket download</li>
+					<li class="yes">Organiser: 1 active event</li>
+					<li class="yes">Organiser: 10 attendees per event</li>
+					<li class="no">Organiser: sold tickets dashboard</li>
+				</ul>
+				<a href="{% url 'pricing' %}" class="btn-home-plan-ghost">Get Started Free</a>
+			</div>
+			<div class="home-pricing-card home-pricing-card--featured">
+				<div class="home-pricing-badge">Most Popular</div>
+				<div class="home-pricing-header">
+					<h5>Standard</h5>
+					<div class="home-pricing-price">$10.00<span>/mo</span></div>
+					<p>For growing sellers and repeat buyers</p>
+				</div>
+				<ul class="home-pricing-features">
+					<li class="yes">Buyer: 50 tickets per month</li>
+					<li class="yes">Buyer: view ticket history</li>
+					<li class="yes">Buyer: PDF ticket download</li>
+					<li class="yes">Organiser: 10 active events</li>
+					<li class="yes">Organiser: 500 attendees per event</li>
+					<li class="yes">Organiser: sold tickets dashboard</li>
+				</ul>
+				<a href="{% url 'pricing' %}" class="btn-home-plan">Get Standard</a>
+			</div>
+			<div class="home-pricing-card">
+				<div class="home-pricing-header">
+					<h5>Premium</h5>
+					<div class="home-pricing-price">$15.00<span>/mo</span></div>
+					<p>For venues, promoters, and teams selling at scale</p>
+				</div>
+				<ul class="home-pricing-features">
+					<li class="yes">Buyer: unlimited tickets</li>
+					<li class="yes">Buyer: view ticket history</li>
+					<li class="yes">Buyer: PDF ticket download</li>
+					<li class="yes">Organiser: unlimited active events</li>
+					<li class="yes">Organiser: unlimited attendees</li>
+					<li class="yes">Organiser: sold tickets dashboard</li>
+				</ul>
+				<a href="{% url 'pricing' %}" class="btn-home-plan-ghost">Get Premium</a>
+			</div>
+		</div>
+	</section>
+
+	<section class="home-section home-section--alt" id="testimonials">
+		<div class="home-section-label">User Reviews</div>
+		<h2 class="home-section-title">What our customers are saying</h2>
+
+		<div class="row g-4 mt-2">
+			<div class="col-lg-4 col-md-6">
+				<div class="home-testimonial-card">
+					<div class="home-stars">★★★★★</div>
+					<p>"Buying tickets is quick, and having my history in one place makes it easy to keep track of every event."</p>
+					<div class="home-testimonial-author">
+						<div class="home-testimonial-avatar">S</div>
+						<div>
+							<strong>Sarah M.</strong>
+							<small>Buyer</small>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-6">
+				<div class="home-testimonial-card home-testimonial-card--accent">
+					<div class="home-stars">★★★★★</div>
+					<p>"The sold tickets dashboard helped our team manage launches with less manual follow-up and fewer support questions."</p>
+					<div class="home-testimonial-author">
+						<div class="home-testimonial-avatar">J</div>
+						<div>
+							<strong>James K.</strong>
+							<small>Organiser</small>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-6">
+				<div class="home-testimonial-card">
+					<div class="home-stars">★★★★★</div>
+					<p>"Poster uploads, ticket types, and event controls are simple enough for small teams but still feel professional."</p>
+					<div class="home-testimonial-author">
+						<div class="home-testimonial-avatar">A</div>
+						<div>
+							<strong>Amara D.</strong>
+							<small>Event Team</small>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="home-section" id="faq">
+		<div class="home-section-label">FAQ</div>
+		<h2 class="home-section-title">Frequently Asked Questions</h2>
+
+		<div class="home-faq-grid">
+			<div class="home-faq-item">
+				<button class="home-faq-question" onclick="toggleFaq(this)">
+					How does ticket delivery work?
+					<span class="home-faq-icon">+</span>
+				</button>
+				<div class="home-faq-answer">
+					After purchase, your digital ticket is stored in your dashboard with a unique barcode, and eligible plans can also download it as a PDF.
+				</div>
+			</div>
+			<div class="home-faq-item">
+				<button class="home-faq-question" onclick="toggleFaq(this)">
+					Can buyers track previous tickets?
+					<span class="home-faq-icon">+</span>
+				</button>
+				<div class="home-faq-answer">
+					Yes. Every plan includes ticket history, so buyers can come back and review previous purchases from their account.
+				</div>
+			</div>
+			<div class="home-faq-item">
+				<button class="home-faq-question" onclick="toggleFaq(this)">
+					What organiser tools are included?
+					<span class="home-faq-icon">+</span>
+				</button>
+				<div class="home-faq-answer">
+					Organisers can create active events, set ticket limits, upload posters, and unlock dashboards, reports, and support as they move up plans.
+				</div>
+			</div>
+			<div class="home-faq-item">
+				<button class="home-faq-question" onclick="toggleFaq(this)">
+					Which plan includes analytics?
+					<span class="home-faq-icon">+</span>
+				</button>
+				<div class="home-faq-answer">
+					The Premium plan includes analytics, reports, and priority support for teams that need deeper visibility into ticket sales.
+				</div>
+			</div>
+			<div class="home-faq-item">
+				<button class="home-faq-question" onclick="toggleFaq(this)">
+					Can I upgrade later?
+					<span class="home-faq-icon">+</span>
+				</button>
+				<div class="home-faq-answer">
+					Yes. You can start on Free and upgrade to Standard or Premium whenever you need more buyer capacity or organiser tools.
+				</div>
+			</div>
+			<div class="home-faq-item">
+				<button class="home-faq-question" onclick="toggleFaq(this)">
+					Is the platform secure?
+					<span class="home-faq-icon">+</span>
+				</button>
+				<div class="home-faq-answer">
+					Absolutely. Buyer and organiser data are stored securely, and ticket activity stays accessible from one protected account.
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="home-cta-banner">
+		<div class="home-cta-inner">
+			<h2>Ready to launch your next event?</h2>
+			<p>Join buyers, organisers, and event teams using Tixora to sell smarter, manage access, and grow ticket revenue.</p>
+			<div class="home-cta-actions">
+				<a href="{% url 'register' %}" class="btn-home-primary">
+					Create Free Account
+					<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+					</svg>
+				</a>
+				<a href="{% url 'login' %}" class="btn-home-ghost btn-home-ghost--light">Already have an account?</a>
+			</div>
+		</div>
+	</section>
+
+	<footer class="home-footer">
+		<div class="row align-items-center g-3">
+			<div class="col-md-4">
+				<div class="home-footer-brand">
+					<img src="{% static 'portal/image/logo.jpg' %}" alt="Tixora" height="32" onerror="this.style.display='none'" />
+					<span>Tixora</span>
+				</div>
+				<p class="home-footer-tagline">Powering ticket sales for buyers, organisers, venues, and live experiences.</p>
+			</div>
+			<div class="col-md-4 text-center">
+				<div class="home-footer-links">
+					<a href="#features">Features</a>
+					<a href="#packages">Platform</a>
+					<a href="#pricing">Pricing</a>
+					<a href="#faq">FAQ</a>
+				</div>
+			</div>
+			<div class="col-md-4 text-md-end">
+				<div class="home-footer-auth">
+					<a href="{% url 'login' %}">Login</a>
+					<a href="{% url 'register' %}" class="home-footer-cta">Get Started</a>
+				</div>
+			</div>
+		</div>
+		<div class="home-footer-bottom">
+			<span>© 2026 Tixora. All rights reserved.</span>
+		</div>
+	</footer>
+</div>
+
+<script>
+function toggleFaq(btn) {
+  const item = btn.closest('.home-faq-item');
+  const answer = item.querySelector('.home-faq-answer');
+  const icon = btn.querySelector('.home-faq-icon');
+  const isOpen = item.classList.contains('is-open');
+  document.querySelectorAll('.home-faq-item.is-open').forEach(i => {
+    i.classList.remove('is-open');
+    i.querySelector('.home-faq-answer').style.maxHeight = null;
+    i.querySelector('.home-faq-icon').textContent = '+';
+  });
+  if (!isOpen) {
+    item.classList.add('is-open');
+    answer.style.maxHeight = answer.scrollHeight + 'px';
+    icon.textContent = '−';
+  }
+}
+</script>
+
+{% endblock %}
