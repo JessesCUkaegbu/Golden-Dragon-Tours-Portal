@@ -3,14 +3,13 @@ import os
 import environ
 import dj_database_url
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = env.str("SECRET_KEY")
 IS_PRODUCTION = env.bool("IS_PRODUCTION", default=False)
-DEBUG = not IS_PRODUCTION
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["127.0.0.1", "localhost", "tixora.org", "www.tixora.org"])
 CSRF_TRUSTED_ORIGINS = env.list(
@@ -71,7 +70,7 @@ JAZZMIN_SETTINGS = {
     "site_icon": None,
 }
 
-ROOT_URLCONF = "travel_portal.urls"
+ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
     {
@@ -88,7 +87,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "travel_portal.wsgi.application"
+WSGI_APPLICATION = "config.wsgi.application"
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -104,7 +103,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [BASE_DIR / "portal" / "static"]
+STATICFILES_DIRS = [BASE_DIR / "static"]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 CLOUDINARY_CLOUD_NAME = env.str("CLOUDINARY_CLOUD_NAME", default=None)
@@ -123,14 +122,6 @@ else:
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_REDIRECT_URL = "dashboard"
 LOGOUT_REDIRECT_URL = "home"
-
-SECURE_SSL_REDIRECT = IS_PRODUCTION
-SESSION_COOKIE_SECURE = IS_PRODUCTION
-CSRF_COOKIE_SECURE = IS_PRODUCTION
-SECURE_HSTS_SECONDS = 3600 if IS_PRODUCTION else 0
-SECURE_HSTS_INCLUDE_SUBDOMAINS = IS_PRODUCTION
-SECURE_HSTS_PRELOAD = IS_PRODUCTION
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https") if IS_PRODUCTION else None
 
 EMAIL_BACKEND = env.str("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
 EMAIL_HOST = env.str("EMAIL_HOST", default="localhost")
