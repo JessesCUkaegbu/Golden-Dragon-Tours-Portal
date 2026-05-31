@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+from .models import UserProfile
 
 
 class RegisterForm(UserCreationForm):
@@ -33,6 +34,25 @@ class RegisterForm(UserCreationForm):
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("An account with this email already exists.")
         return email
+
+
+class ProfileForm(forms.ModelForm):
+    first_name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control custom-input", "placeholder": "First name"}),
+    )
+    last_name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control custom-input", "placeholder": "Last name"}),
+    )
+
+    class Meta:
+        model = UserProfile
+        fields = ["phone", "nationality"]
+        widgets = {
+            "phone": forms.TextInput(attrs={"class": "form-control custom-input", "placeholder": "Phone number"}),
+            "nationality": forms.TextInput(attrs={"class": "form-control custom-input", "placeholder": "Nationality"}),
+        }
 
 
 class PortalAuthForm(AuthenticationForm):

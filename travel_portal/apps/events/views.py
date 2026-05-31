@@ -20,7 +20,29 @@ def _get_or_create_subscription(user):
 
 
 def event_list(request):
-    events = Event.objects.filter(is_active=True).order_by("event_date", "-created_at")
+    qs = Event.objects.filter(is_active=True).order_by("event_date", "-created_at")
+
+    # Server-side filtering — these params make URLs bookmarkable and work without JS
+    q = request.GET.get("q", "").strip()
+    date_from = request.GET.get("date_from", "").strip()
+    date_to = request.GET.get("date_to", "").strip()
+    location = request.GET.get("location", "").strip()
+
+    if q:
+        from django.db.models import Q
+        qs = qs.filter(Q(name__icontains=q) | Q(description__icontains=q) | Q(location__icontains=q))
+    if location:
+        qs = qs.filter(location__icontains=location)
+    if date_from:
+        try:
+            qs = qs.filter(event_date__gte=date_from)
+        except (ValueError, TypeError):
+            pass
+    if date_to:
+        try:
+            qs = qs.filter(event_date__lte=date_to)
+        except (ValueError, TypeError):
+            pass
 
     class EventTicketForm(TicketForm):
         def __init__(self, *args, **kwargs):
@@ -30,7 +52,14 @@ def event_list(request):
             self.fields["nationality"].required = False
 
     form = EventTicketForm()
-    return render(request, "events/event_list.html", {"events": events, "form": form})
+    return render(request, "events/event_list.html", {
+        "events": qs,
+        "form": form,
+        "q": q,
+        "date_from": date_from,
+        "date_to": date_to,
+        "location": location,
+    })
 
 
 @login_required

@@ -2,7 +2,8 @@ import logging
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum
+from django.core.paginator import Paginator
+from django.views.decorators.http import require_POST
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -18,10 +19,15 @@ from .services import prepare_barcode, send_confirmation
 logger = logging.getLogger(__name__)
 
 
+DASHBOARD_TICKETS_PER_PAGE = 15
+
+
 @login_required
 def dashboard(request):
     form = TicketForm()
-    tickets = Ticket.objects.filter(user=request.user).order_by("-created_at")
+    ticket_qs = Ticket.objects.filter(user=request.user).order_by("-created_at")
+    paginator = Paginator(ticket_qs, DASHBOARD_TICKETS_PER_PAGE)
+    page_obj = paginator.get_page(request.GET.get("page"))
     subscription, _ = Subscription.objects.get_or_create(
         user=request.user,
         defaults={"plan": Subscription.PLAN_FREE, "status": Subscription.STATUS_ACTIVE},
@@ -29,24 +35,24 @@ def dashboard(request):
     events = Event.objects.filter(is_active=True).order_by("event_date", "-created_at")
     return render(request, "tickets/dashboard.html", {
         "form": form,
-        "tickets": tickets,
+        "tickets": page_obj,          # page_obj is iterable, len() works, and carries pagination metadata
+        "page_obj": page_obj,
         "subscription": subscription,
         "events": events,
     })
 
 
-def _check_event_capacity(event, organiser, requested_quantity):
-    """Return an error message string if the event is over capacity, otherwise None."""
-    max_attendees = organiser.max_attendees_per_event
-    if max_attendees is None:
-        return None
-    sold = (
-        Ticket.objects.filter(event=event)
-        .aggregate(total=Sum("quantity"))
-        .get("total") or 0
-    )
-    if sold + requested_quantity > max_attendees:
-        return f"This event has reached its maximum capacity of {max_attendees} attendees."
+def _check_event_capacity(event, requested_quantity):
+    """Return an error message string if the event is over capacity, otherwise None.
+
+    Reads Event.tickets_available directly — kept accurate by the post_save signal
+    in tickets/signals.py, so no aggregation query is needed.
+    """
+    if event.tickets_available < requested_quantity:
+        return (
+            f"Not enough tickets available. "
+            f"Only {event.tickets_available} ticket(s) remaining for this event."
+        )
     return None
 
 
@@ -97,12 +103,8 @@ def create_ticket(request):
             messages.error(request, err)
             return redirect("event_list")
 
-        organiser_sub, _ = Subscription.objects.get_or_create(
-            user=event.creator,
-            defaults={"plan": "free", "status": "active"},
-        )
         capacity_err = _check_event_capacity(
-            event, organiser_sub, form.cleaned_data.get("quantity") or 1
+            event, form.cleaned_data.get("quantity") or 1
         )
         if capacity_err:
             if is_ajax:
@@ -159,6 +161,19 @@ def _form_error_response(request, form, sub, is_ajax, came_from_events):
         "subscription": sub,
         "open_ticket_modal": True,
     })
+
+
+@login_required
+@require_POST
+def cancel_ticket(request, ticket_id):
+    ticket = get_object_or_404(Ticket, id=ticket_id, user=request.user)
+    if ticket.status != Ticket.STATUS_PENDING:
+        messages.error(request, "Only pending tickets can be cancelled.")
+        return redirect("dashboard")
+    ticket.status = Ticket.STATUS_CANCELLED
+    ticket.save(update_fields=["status"])
+    messages.success(request, f"Ticket {ticket.reference_code} has been cancelled.")
+    return redirect("dashboard")
 
 
 @login_required

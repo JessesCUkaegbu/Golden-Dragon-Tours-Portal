@@ -1810,15 +1810,22 @@ h5 {
 
 .event-filter-panel {
   display: flex;
-  align-items: center;
-  gap: 18px;
-  padding: 16px 14px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 20px 20px 20px;
   border: 1px solid #d8e0eb;
   border-radius: 0 0 24px 24px;
   background: #fff;
   box-shadow: 0 10px 28px rgba(23, 42, 79, 0.05);
   margin-top: -8px;
   margin-bottom: 28px;
+}
+
+/* date inputs have no leading icon — reset the left padding */
+input[type="date"].event-search-input {
+  padding-left: 18px;
+  cursor: pointer;
 }
 
 .event-filter-label {
@@ -2076,9 +2083,17 @@ h5 {
     font-size: 1.8rem;
   }
 
+  /* filter panel is already column-direction — just tighten padding on small screens */
   .event-filter-panel {
-    flex-direction: column;
-    align-items: flex-start;
+    padding: 16px 14px;
+  }
+
+  /* refine-results inner row: force each field full width */
+  .event-filter-panel .event-refine-row > div,
+  .event-filter-panel .event-refine-row input,
+  .event-filter-panel .event-refine-row > div:last-child {
+    min-width: 100% !important;
+    flex: 1 1 100% !important;
   }
 
   .event-toolbar-actions {

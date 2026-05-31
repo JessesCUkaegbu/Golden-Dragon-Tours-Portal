@@ -1,0 +1,95 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+{% block content %}
+
+<div class="portal-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div style="background:#ffffff;padding:8px 12px;border-radius:14px;display:flex;align-items:center;justify-content:center;">
+        <img src="{% static 'portal/image/logo.jpg' %}" alt="Tixora" onerror="this.style.display='none'" />
+      </div>
+    </div>
+    <span class="sidebar-section-label">Main Menu</span>
+    <ul class="sidebar-nav">
+      <li><a href="{% url 'dashboard' %}">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+        Dashboard</a></li>
+      <li><a href="{% url 'profile' %}" class="active">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+        Profile</a></li>
+      <li><a href="{% url 'event_list' %}">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+        Events</a></li>
+    </ul>
+  </aside>
+
+  <div class="main-content" id="mainContent">
+    <header class="topbar">
+      <div class="d-flex align-items-center gap-3">
+        <div class="topbar-left"><h4>My Profile</h4></div>
+      </div>
+      <div class="topbar-right">
+        <form method="post" action="{% url 'logout' %}" class="m-0">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-brand-dark btn-sm px-3" style="font-size:0.8rem">Logout</button>
+        </form>
+      </div>
+    </header>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if 'error' in message.tags %}alert-danger{% else %}alert-success{% endif %} custom-alert shadow-sm m-4">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="m-4" style="max-width:640px;">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Account Information</div>
+            <div class="panel-subtitle">Update your personal details and contact information.</div>
+          </div>
+        </div>
+        <div style="padding:0 24px 24px;">
+          <form method="POST">
+            {% csrf_token %}
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">First Name</label>
+                {{ form.first_name }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Last Name</label>
+                {{ form.last_name }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-control custom-input" value="{{ user.username }}" disabled />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-control custom-input" value="{{ user.email }}" disabled />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Phone Number</label>
+                {{ form.phone }}
+                {% if form.phone.errors %}<div class="text-danger small mt-1">{{ form.phone.errors|striptags }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Nationality</label>
+                {{ form.nationality }}
+                {% if form.nationality.errors %}<div class="text-danger small mt-1">{{ form.nationality.errors|striptags }}</div>{% endif %}
+              </div>
+            </div>
+            <div class="mt-4 d-flex gap-3 align-items-center">
+              <button type="submit" class="btn btn-brand px-4">Save Changes</button>
+              <a href="{% url 'password_reset' %}" class="btn btn-outline-dark px-4">Change Password</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
