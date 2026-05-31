@@ -6,15 +6,25 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+# Load .env file only in local development — on Railway env vars are injected
+# directly, so the file won't exist and read_env() would raise FileNotFoundError.
+_env_file = os.path.join(BASE_DIR, '.env')
+if os.path.isfile(_env_file):
+    environ.Env.read_env(_env_file)
 
 SECRET_KEY = env.str("SECRET_KEY")
 IS_PRODUCTION = env.bool("IS_PRODUCTION", default=False)
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["127.0.0.1", "localhost", "tixora.org", "www.tixora.org"])
+# ALLOWED_HOSTS: set the ALLOWED_HOSTS env var on Railway to your Railway domain,
+# e.g. ALLOWED_HOSTS=tixora.up.railway.app,tixora.org,www.tixora.org
+ALLOWED_HOSTS = env.list(
+    "ALLOWED_HOSTS",
+    default=["127.0.0.1", "localhost", "tixora.org", "www.tixora.org"],
+)
 CSRF_TRUSTED_ORIGINS = env.list(
     "CSRF_TRUSTED_ORIGINS",
-    default=["http://127.0.0.1:8000", "http://localhost:8000", "https://tixora.org", "https://www.tixora.org"]
+    default=["http://127.0.0.1:8000", "http://localhost:8000", "https://tixora.org", "https://www.tixora.org"],
 )
 
 DATABASE_URL = env.str("DATABASE_URL", default=None)
